@@ -15,7 +15,7 @@ class CafeSeeder extends Seeder
     public function run(): void
     {
         $cafes = [
-            ['name' => 'Awake Coffee Central', 'city' => 'jakarta', 'about' => 'Our flagship store in the heart of Jakarta. Experience premium coffee in a modern, comfortable setting.', 'facilities' => ['wifi', 'power', 'meeting', 'outdoor', 'parking', 'ac', 'music', 'toilet'], 'manager_name' => 'Ahmad Rizki'],
+            ['name' => 'Koperasi Central', 'city' => 'Bandung', 'about' => 'Our flagship store in the heart of Jakarta.', 'facilities' => ['wifi', 'power', 'meeting', 'outdoor', 'parking', 'ac', 'music', 'toilet'], 'manager_name' => 'Ahmad Rizki'],
             // ['name' => 'Awake Coffee Sudirman', 'city' => 'jakarta', 'about' => 'Located in the business district, perfect for professionals seeking quality coffee breaks.', 'facilities' => ['wifi', 'power', 'parking', 'ac', 'toilet'], 'manager_name' => 'Dewi Sartika'],
             // ['name' => 'Awake Coffee Dago', 'city' => 'bandung', 'about' => 'Nestled in the hills of Bandung with stunning city views and fresh mountain air.', 'facilities' => ['wifi', 'power', 'outdoor', 'music', 'toilet'], 'manager_name' => 'Budi Santoso'],
             // ['name' => 'Awake Coffee Braga', 'city' => 'bandung', 'about' => 'Historic location on the famous Braga street, blending heritage with modern coffee culture.', 'facilities' => ['wifi', 'power', 'parking', 'ac', 'music', 'toilet'], 'manager_name' => 'Citra Dewi'],

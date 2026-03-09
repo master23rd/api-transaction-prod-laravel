@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
 class UserSeeder extends Seeder
 {
@@ -14,6 +15,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create(); // <- buat Faker instance
+
         // Create additional cafe managers
         $managers = [
             ['name' => 'Ahmad Rizki', 'email' => 'ahmad@koperasi.com'],
@@ -29,7 +32,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => $manager['name'],
                     'password' => Hash::make('password'),
-                    'phone' => fake()->phoneNumber(),
+                    'phone' => $faker->phoneNumber,
                 ]
             );
             $user->assignRole('cafe_manager');
@@ -55,17 +58,17 @@ class UserSeeder extends Seeder
                 [
                     'name' => $customer['name'],
                     'password' => Hash::make('password'),
-                    'gender' => fake()->randomElement(['male', 'female']),
-                    'phone' => fake()->phoneNumber(),
-                    'email_verified_at' => now(), // Set email as verified for testing
+                    'gender' => $faker->randomElement(['male', 'female']),
+                    'phone' => $faker->phoneNumber,
+                    'email_verified_at' => now(),
                 ]
             );
             $user->assignRole('customer');
 
-            // Create wallet for customer with random balance for testing
+            // Create wallet for customer
             Wallet::firstOrCreate(
                 ['user_id' => $user->id],
-                ['balance' => fake()->randomElement([0, 50000, 100000, 250000, 500000, 750000, 1000000])]
+                ['balance' => $faker->randomElement([0, 50000, 100000, 250000, 500000, 750000, 1000000])]
             );
         }
     }
