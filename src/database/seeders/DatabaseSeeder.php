@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
 
         // Seed all other tables
         $this->call([
-            UserSeeder::class,          // Additional managers and customers
+            // UserSeeder::class,          // Additional managers and customers
             CategorySeeder::class,      // Product categories
             CitySeeder::class,          // Cities
             ProductSeeder::class,       // Products (depends on Category)
