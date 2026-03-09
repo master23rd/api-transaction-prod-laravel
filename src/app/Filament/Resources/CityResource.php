@@ -60,7 +60,7 @@ class CityResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('cafes_count')
-                    ->label('Cafes')
+                    ->label('Koperasi')
                     ->counts('cafes')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

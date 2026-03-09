@@ -35,7 +35,7 @@ class CreateTransaction extends CreateRecord
                         ->preload()
                         ->required(),
                     Forms\Components\Select::make('cafe_id')
-                        ->label('Cafe')
+                        ->label('Koperasi')
                         ->relationship('cafe', 'name')
                         ->searchable()
                         ->preload()

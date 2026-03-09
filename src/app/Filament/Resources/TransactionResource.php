@@ -47,7 +47,7 @@ class TransactionResource extends Resource
                             ->required()
                             ->disabled(),
                         Forms\Components\Select::make('cafe_id')
-                            ->label('Cafe')
+                            ->label('Koperasi')
                             ->relationship('cafe', 'name')
                             ->searchable()
                             ->preload()
@@ -137,7 +137,7 @@ class TransactionResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cafe.name')
-                    ->label('Cafe')
+                    ->label('Koperasi')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_items')
@@ -317,7 +317,7 @@ class TransactionResource extends Resource
                             ->label('Customer')
                             ->icon('heroicon-o-user'),
                         Infolists\Components\TextEntry::make('cafe.name')
-                            ->label('Cafe')
+                            ->label('Koperasi')
                             ->icon('heroicon-o-building-storefront'),
                     ])->columns(4),
 

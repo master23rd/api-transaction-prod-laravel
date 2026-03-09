@@ -29,6 +29,16 @@ class CafeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getModelLabel(): string
+    {
+        return 'Koperasi';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Koperasi';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
