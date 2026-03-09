@@ -16,11 +16,11 @@ class UserSeeder extends Seeder
     {
         // Create additional cafe managers
         $managers = [
-            ['name' => 'Ahmad Rizki', 'email' => 'ahmad@awake.com'],
-            ['name' => 'Dewi Sartika', 'email' => 'dewi@awake.com'],
-            ['name' => 'Budi Santoso', 'email' => 'budi@awake.com'],
-            ['name' => 'Citra Dewi', 'email' => 'citra@awake.com'],
-            ['name' => 'Eko Prasetyo', 'email' => 'eko@awake.com'],
+            ['name' => 'Ahmad Rizki', 'email' => 'ahmad@koperasi.com'],
+            ['name' => 'Dewi Sartika', 'email' => 'dewi@koperasi.com'],
+            ['name' => 'Budi Santoso', 'email' => 'budi@koperasi.com'],
+            ['name' => 'Citra Dewi', 'email' => 'citra@koperasi.com'],
+            ['name' => 'Eko Prasetyo', 'email' => 'eko@koperasi.com'],
         ];
 
         foreach ($managers as $manager) {

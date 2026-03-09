@@ -15,8 +15,8 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             'Coffee',
-            'Non Coffee',
-            'Tea',
+            'Milk',
+            'Sembako',
             'Snack',
             'Merchandise',
         ];

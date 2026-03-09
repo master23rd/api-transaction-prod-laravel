@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
 
         // Create cafe manager user
         $manager = User::firstOrCreate(
-            ['email' => 'manager@awake.com'],
+            ['email' => 'manager@koperasi.com'],
             [
-                'name' => 'Cafe Manager',
+                'name' => 'Koperasi Manager',
                 'password' => Hash::make('password'),
             ]
         );
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 
         // Create customer user
         $customer = User::firstOrCreate(
-            ['email' => 'customer@awake.com'],
+            ['email' => 'customer@koperasi.com'],
             [
                 'name' => 'Customer',
                 'password' => Hash::make('password'),
