@@ -21,6 +21,8 @@ class CafeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
+    protected static ?string $navigationLabel = 'Koperasi';
+
     protected static ?string $navigationGroup = 'Location';
 
     protected static ?int $navigationSort = 2;
