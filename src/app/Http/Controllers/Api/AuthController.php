@@ -25,6 +25,20 @@ class AuthController extends Controller
             'phone' => 'nullable|string|max:20',
             'gender' => 'nullable|string|in:male,female,other',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+
+            // tambahan user detail
+            'nik' => 'required|string|unique:user_details,nik',
+            'birth_date' => 'required|date',
+            'job' => 'nullable|string',
+            'office_name' => 'nullable|string',
+            'positions' => 'nullable|string',
+            'salary' => 'nullable|string',
+            'marital' => 'nullable|string',
+            'contact_person' => 'nullable|string',
+            'name_person' => 'nullable|string',
+            'kids' => 'nullable|integer',
+            'number_contact_person' => 'nullable|string',
+            'ktp_photos' => 'nullable|url',
         ]);
 
         $result = $this->authService->register($validated);

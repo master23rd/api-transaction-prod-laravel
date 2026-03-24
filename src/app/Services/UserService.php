@@ -9,6 +9,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Models\UserDetail;
 
 class UserService
 {
@@ -18,31 +19,59 @@ class UserService
 
     public function registerCustomer(array $data): User
     {
-        $userData = [
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'phone' => $data['phone'] ?? null,
-            'gender' => $data['gender'] ?? null,
-        ];
+        DB::beginTransaction();
 
-        // Handle photo upload
-        if (isset($data['photo'])) {
-            $userData['photo'] = $data['photo']->store('profile-photos', 'public');
+        try {
+            $userData = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'phone' => $data['phone'] ?? null,
+                'gender' => $data['gender'] ?? null,
+            ];
+
+            // Handle photo upload
+            if (isset($data['photo'])) {
+                $userData['photo'] = $data['photo']->store('profile-photos', 'public');
+            }
+
+            // Create user
+            $user = $this->userRepository->create($userData);
+
+            // Assign role
+            $user->assignRole('customer');
+
+            // Create wallet
+            Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0,
+            ]);
+
+            // INSERT USER DETAIL (BARU)
+            UserDetail::create([
+                'user_id' => $user->id,
+                'nik' => $data['nik'],
+                'birth_date' => $data['birth_date'],
+                'job' => $data['job'] ?? null,
+                'office_name' => $data['office_name'] ?? null,
+                'positions' => $data['positions'] ?? null,
+                'salary' => $data['salary'] ?? null,
+                'marital' => $data['marital'] ?? null,
+                'contact_person' => $data['contact_person'] ?? null,
+                'name_person' => $data['name_person'] ?? null,
+                'kids' => $data['kids'] ?? 0,
+                'number_contact_person' => $data['number_contact_person'] ?? null,
+                'ktp_photos' => $data['ktp_photos'] ?? null,
+            ]);
+
+            DB::commit();
+
+            return $user;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
-
-        $user = $this->userRepository->create($userData);
-
-        // Assign customer role
-        $user->assignRole('customer');
-
-        // Create wallet for customer
-        Wallet::create([
-            'user_id' => $user->id,
-            'balance' => 0,
-        ]);
-
-        return $user;
     }
 
     public function findById(int $id): ?User
