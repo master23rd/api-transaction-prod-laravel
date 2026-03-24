@@ -27,8 +27,8 @@ class AuthController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
 
             // tambahan user detail
-            'nik' => 'required|string|unique:user_details,nik',
-            'birth_date' => 'required|date',
+            'nik' => 'nullable|string|unique:user_details,nik',
+            'birth_date' => 'nullable|date',
             'job' => 'nullable|string',
             'office_name' => 'nullable|string',
             'positions' => 'nullable|string',
