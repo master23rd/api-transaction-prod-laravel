@@ -62,6 +62,7 @@ class AuthController extends Controller
 
         $result = $this->authService->tokenLogin($validated);
 
+        // ❌ Invalid credentials
         if (!$result) {
             return response()->json([
                 'success' => false,
@@ -69,9 +70,27 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // ❌ Error dari service (belum verified / inactive)
+        if (isset($result['error']) && $result['error']) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'],
+            ], 403);
+        }
+
+        // 🔐 Jika butuh OTP
+        if ($result['requires_otp']) {
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent to your email. Please verify to complete login.',
+                'data' => $result,
+            ]);
+        }
+
+        // ✅ Jika langsung login (tanpa 2FA)
         return response()->json([
             'success' => true,
-            'message' => 'OTP sent to your email. Please verify to complete login.',
+            'message' => 'Login successful',
             'data' => $result,
         ]);
     }

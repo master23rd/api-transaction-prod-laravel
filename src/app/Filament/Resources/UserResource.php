@@ -221,7 +221,7 @@ class UserResource extends Resource
                         Infolists\Components\TextEntry::make('email_verified_at')
                             ->label('Verified At')
                             ->dateTime()
-                            ->default('-'),
+                            ->placeholder('-'),
                     ])->columns(4),
 
                 Infolists\Components\Section::make('Timestamps')

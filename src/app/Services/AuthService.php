@@ -37,13 +37,35 @@ class AuthService
             return null;
         }
 
-        // Send OTP for 2FA verification
-        $this->otpService->generateOtp($user);
+        // Block jika belum verifikasi
+        if (!$user->is_verified) {
+            return [
+                'error' => true,
+                'message' => 'Account is not verified, please contact our customer service',
+            ];
+        }
+
+        // Jika 2FA aktif → kirim OTP
+        if ($user->is_2fa_enabled) {
+            $this->otpService->generateOtp($user);
+
+            return [
+                'requires_otp' => true,
+                'email' => $user->email,
+                'expires_in_minutes' => $this->otpService->getOtpExpiryMinutes(),
+            ];
+        }
+
+        // Jika 2FA tidak aktif → langsung login
+        // Revoke token lama (opsional tapi disarankan)
+        $user->tokens()->delete();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            'requires_otp' => true,
-            'email' => $user->email,
-            'expires_in_minutes' => $this->otpService->getOtpExpiryMinutes(),
+            'requires_otp' => false,
+            'user' => $this->userService->formatUserResponse($user),
+            'token' => $token,
         ];
     }
 
