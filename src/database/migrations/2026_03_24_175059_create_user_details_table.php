@@ -14,8 +14,8 @@ return new class extends Migration
             // Relasi ke users
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
-            $table->string('nik')->unique();
-            $table->date('birth_date');
+            $table->string('nik')->nullable()->unique();
+            $table->date('birth_date')->nullable();
             $table->string('job')->nullable();
             $table->string('office_name')->nullable();
             $table->string('positions')->nullable();
