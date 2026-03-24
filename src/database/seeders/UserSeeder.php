@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
                     'phone' => $faker->phoneNumber,
                     'gender' => $faker->randomElement(['male', 'female']),
                     'email_verified_at' => now(),
-                    'status' => true,
+                    'is_active' => true,
                     'is_verified' => true,
                     'is_2fa_enabled' => false,
                 ]
@@ -90,7 +90,7 @@ class UserSeeder extends Seeder
                     'gender' => $faker->randomElement(['male', 'female']),
                     'phone' => $faker->phoneNumber,
                     'email_verified_at' => now(),
-                    'status' => true,
+                    'is_active' => true,
                     'is_verified' => true,
                     'is_2fa_enabled' => $faker->boolean(30), // 30% aktif 2FA
                 ]
