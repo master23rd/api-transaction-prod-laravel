@@ -50,8 +50,8 @@ class UserService
             // INSERT USER DETAIL (BARU)
             UserDetail::create([
                 'user_id' => $user->id,
-                'nik' => $data['nik'],
-                'birth_date' => $data['birth_date'],
+                'nik' => $data['nik'] ?? null,
+                'birth_date' => $data['birth_date'] ?? null,
                 'job' => $data['job'] ?? null,
                 'office_name' => $data['office_name'] ?? null,
                 'positions' => $data['positions'] ?? null,
