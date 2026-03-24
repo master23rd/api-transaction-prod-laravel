@@ -31,6 +31,8 @@ class User extends Authenticatable implements FilamentUser
         'gender',
         'phone',
         'photo',
+        'is_active',
+        'is_verified',
     ];
 
     /**
@@ -84,5 +86,10 @@ class User extends Authenticatable implements FilamentUser
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(UserDetail::class);
     }
 }
