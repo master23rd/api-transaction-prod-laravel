@@ -53,7 +53,8 @@ class UserResource extends Resource
                             ->password()
                             ->requiredWith('password')
                             ->maxLength(255),
-                         // ✅ TAMBAHAN
+
+                         // Activate Fomr
                         Forms\Components\Toggle::make('is_active')
                             ->label('Active Status')
                             ->default(true)
@@ -71,29 +72,51 @@ class UserResource extends Resource
                         Forms\Components\FileUpload::make('photo')
                             ->image()
                             ->directory('users')
-                            ->imageEditor()
-                            ->circleCropper(),
+                            ->circleCropper()
+                            ->disk('public')
+                            ->visibility('public')
+                            ->preserveFilenames(false)
+                            ->imageResizeTargetWidth(300),
+
                         Forms\Components\Select::make('gender')
                             ->options([
                                 'male' => 'Male',
                                 'female' => 'Female',
                             ])
                             ->native(false),
+
                         Forms\Components\TextInput::make('phone')
                             ->tel()
                             ->maxLength(255),
-                    ])->columns(3),
+                    ])
+                    ->columns(2),
+                
+                Forms\Components\Section::make('KTP Information')
+                    ->relationship('detail') // ✅ hanya untuk user_details
+                    ->schema([
+                        Forms\Components\FileUpload::make('ktp_photos')
+                            ->label('Upload KTP')
+                            ->image()
+                            ->directory('ktp')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->imageResizeTargetWidth(800)
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png']),
+                    ])
+                    ->columns(1),
+
 
                 Forms\Components\Section::make('Role & Verification')
                     ->schema([
-                        Forms\Components\Select::make('roles')
-                            ->label('Role')
-                            ->relationship('roles', 'name')
-                            ->options(
-                                Role::whereIn('name', ['cafe_manager', 'customer'])->pluck('name', 'id')
-                            )
-                            ->preload()
-                            ->required(),
+                        // Forms\Components\Select::make('roles')
+                        //     ->label('Role')
+                        //     ->relationship('roles', 'name')
+                        //     ->options(
+                        //         Role::whereIn('name', ['cafe_manager', 'customer'])->pluck('name', 'id')
+                        //     )
+                        //     ->preload()
+                        //     ->required(),
                         Forms\Components\DateTimePicker::make('email_verified_at')
                             ->label('Email Verified At'),
                     ])->columns(2),
@@ -234,6 +257,64 @@ class UserResource extends Resource
                             ->dateTime()
                             ->placeholder('-'),
                     ])->columns(4),
+
+                Infolists\Components\Section::make('User Detail Information')
+                ->schema([
+                    Infolists\Components\TextEntry::make('detail.nik')
+                        ->label('NIK')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.birth_date')
+                        ->label('Birth Date')
+                        ->date()
+                        ->placeholder('-'),
+
+                    Infolists\Components\TextEntry::make('detail.job')
+                        ->label('Job')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.office_name')
+                        ->label('Office')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.positions')
+                        ->label('Position')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.salary')
+                        ->label('Salary')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.martial')
+                        ->label('Marital Status')
+                        ->badge()
+                        ->color('info')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.kids')
+                        ->label('Kids')
+                        ->default('0'),
+
+                    Infolists\Components\TextEntry::make('detail.contact_person')
+                        ->label('Contact Person')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.name_person')
+                        ->label('Person Name')
+                        ->default('-'),
+
+                    Infolists\Components\TextEntry::make('detail.number_contact_person')
+                        ->label('Contact Number')
+                        ->default('-'),
+
+                    // ✅ KTP IMAGE
+                    Infolists\Components\ImageEntry::make('detail.ktp_photos')
+                        ->label('KTP Photo')
+                        ->disk('public')
+                        ->height(200)
+                        ->defaultImageUrl('https://via.placeholder.com/200x120?text=No+KTP'),
+                ])
+                ->columns(3),
 
                 Infolists\Components\Section::make('Timestamps')
                     ->schema([

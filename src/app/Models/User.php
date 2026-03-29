@@ -33,6 +33,8 @@ class User extends Authenticatable implements FilamentUser
         'photo',
         'is_active',
         'is_verified',
+        'email_verified_at',
+        'is_2fa_enabled',
     ];
 
     /**

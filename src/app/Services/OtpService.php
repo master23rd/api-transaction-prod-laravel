@@ -43,9 +43,12 @@ class OtpService
         if (!$otp) {
             return false;
         }
-
+        
         // Mark email as verified
-        $user->update(['email_verified_at' => now()]);
+        $user->update([
+            'email_verified_at' => now(),
+            'two_factor_verified_at' => now(),
+        ]);
 
         // Delete the OTP
         $otp->delete();
