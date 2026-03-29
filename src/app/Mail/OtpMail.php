@@ -21,7 +21,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Awake Coffee Verification Code',
+            subject: 'Your OTP Verification Code',
         );
     }
 

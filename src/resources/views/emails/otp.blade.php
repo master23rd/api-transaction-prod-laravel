@@ -75,12 +75,12 @@
 <body>
     <div class="container">
         <div class="logo">
-            <h1>Awake Coffee</h1>
+            <h1>KoperasiQu OTP</h1>
         </div>
 
         <p class="greeting">Hi {{ $userName }},</p>
 
-        <p>You requested a verification code for your Awake Coffee account. Use the code below to complete your verification:</p>
+        <p>You requested a verification code for your KoperasiQu account. Use the code below to complete your verification:</p>
 
         <div class="code-container">
             <div class="code">{{ $code }}</div>
@@ -90,11 +90,11 @@
         <p>If you didn't request this code, you can safely ignore this email. Someone else might have typed your email address by mistake.</p>
 
         <div class="warning">
-            <strong>Security tip:</strong> Never share this code with anyone. Awake Coffee staff will never ask for your verification code.
+            <strong>Security tip:</strong> Never share this code with anyone. KoperasiQu staff will never ask for your verification code.
         </div>
 
         <div class="footer">
-            <p>&copy; {{ date('Y') }} Awake Coffee. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} KoperasiQu. All rights reserved.</p>
             <p>This is an automated message, please do not reply.</p>
         </div>
     </div>
