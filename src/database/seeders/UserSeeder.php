@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
                     'birth_date' => $faker->date(),
                     'job' => 'Manager',
                     'office_name' => 'Koperasi Nusantara',
-                    'positions' => 'Cafe Manager',
+                    'positions' => 'Manager',
                     'salary' => $faker->numberBetween(5000000, 15000000),
                     'marital' => $faker->randomElement(['single', 'married']),
                     'contact_person' => $faker->name,

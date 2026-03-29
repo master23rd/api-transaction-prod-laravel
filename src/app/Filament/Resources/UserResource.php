@@ -53,6 +53,17 @@ class UserResource extends Resource
                             ->password()
                             ->requiredWith('password')
                             ->maxLength(255),
+                         // ✅ TAMBAHAN
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Active Status')
+                            ->default(true)
+                            ->inline(false),
+
+                        Forms\Components\Toggle::make('is_verified')
+                            ->label('Verified User')
+                            ->helperText('User harus verified untuk bisa login')
+                            ->default(false)
+                            ->inline(false),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Profile Information')
