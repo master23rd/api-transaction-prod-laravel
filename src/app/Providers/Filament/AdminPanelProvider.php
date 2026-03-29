@@ -24,6 +24,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->brandName('Koperasiqu Admin')
             ->id('admin')
             ->path('admin')
             ->login()

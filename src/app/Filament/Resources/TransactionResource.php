@@ -31,6 +31,11 @@ class TransactionResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Orders';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         // This form is used by EditTransaction page (overridden there)
