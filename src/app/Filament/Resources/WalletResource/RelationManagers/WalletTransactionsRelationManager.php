@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\WalletResource\RelationManagers;
 
+use App\Models\WalletTransaction;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -80,9 +82,9 @@ class WalletTransactionsRelationManager extends RelationManager
                     ->label('Amount')
                     ->money('IDR')
                     ->sortable()
-                    ->color(fn ($record): string => $record->type === 'top_up' || $record->type === 'refund' ? 'success' : 'danger')
+                    ->color(fn ($record): string => $record->type === 'topup' || $record->type === 'refund' ? 'success' : 'danger')
                     ->formatStateUsing(fn ($record): string =>
-                        ($record->type === 'top_up' || $record->type === 'refund' ? '+' : '-') .
+                        ($record->type === 'topup' || $record->type === 'refund' ? '+' : '-') .
                         'Rp ' . number_format($record->total_amount, 0, ',', '.')
                     ),
                 Tables\Columns\TextColumn::make('status')
@@ -126,19 +128,41 @@ class WalletTransactionsRelationManager extends RelationManager
                     ->label('Approve')
                     ->icon('heroicon-o-check')
                     ->color('success')
-                    ->visible(fn ($record): bool => $record->status === 'pending')
-                    ->action(function ($record): void {
-                        $record->update(['status' => 'success']);
+                    ->visible(fn (WalletTransaction $record): bool => $record->status === 'pending')
+                    ->requiresConfirmation()
+                    ->action(function (WalletTransaction $record): void {
+                        // if ($record->status !== 'pending') return;
 
-                        // Update wallet balance
+                        // $record->update(['status' => 'success']);
+
+                        // $wallet = $record->wallet;
+
+                        // if (!$wallet) return;
+                        
+                        // if (in_array($record->type, ['top_up', 'refund'])) {
+                        //     $wallet->increment('balance', $record->amount);
+                        // } elseif ($record->type === 'payment') {
+                        //     $wallet->decrement('balance', $record->amount);
+                        // }
+
+                        // Notification::make()
+                        // ->title('Transaction approved')
+                        // ->body('Wallet balance updated: +Rp ' . number_format($record->amount, 0, ',', '.'))
+                        // ->success()
+                        // ->send();
+
+                        $record->update(['status' => 'approved']);
+
+                        // Update wallet balance for topup - use amount (pure top-up amount)
                         $wallet = $record->wallet;
-                        if ($record->type === 'top_up' || $record->type === 'refund') {
-                            $wallet->update(['balance' => $wallet->balance + $record->total_amount]);
-                        } elseif ($record->type === 'payment') {
-                            $wallet->update(['balance' => $wallet->balance - $record->total_amount]);
-                        }
-                    })
-                    ->requiresConfirmation(),
+                        $wallet->update(['balance' => $wallet->balance + $record->amount]);
+
+                        Notification::make()
+                            ->title('Transaction approved')
+                            ->body('Wallet balance updated: +Rp ' . number_format($record->amount, 0, ',', '.'))
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Actions\Action::make('reject')
                     ->label('Reject')
                     ->icon('heroicon-o-x-mark')
