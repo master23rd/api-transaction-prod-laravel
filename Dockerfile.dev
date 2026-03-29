@@ -11,6 +11,7 @@ WORKDIR /var/www/html
 RUN apt-get update && apt-get install -y \
     git \
     curl \
+    ca-certificates \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
@@ -23,7 +24,8 @@ RUN apt-get update && apt-get install -y \
     libgd-dev \
     libicu-dev \
     jpegoptim optipng pngquant gifsicle \
-    vim
+    vim \
+ && update-ca-certificates
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
