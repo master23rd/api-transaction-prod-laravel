@@ -19,6 +19,11 @@ class Cafe extends Model
         'about',
         'facilities',
         'manager_name',
+        'phone_number',
+        'email',
+        'bank_name',
+        'bank_account_number',
+        'bank_account_name',
     ];
 
     protected function casts(): array

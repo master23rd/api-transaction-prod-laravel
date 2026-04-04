@@ -97,6 +97,32 @@ class CafeResource extends Resource
                             ->columns(4)
                             ->columnSpanFull(),
                     ]),
+                
+                Forms\Components\Section::make('Contact & Payment')
+                    ->schema([
+                        Forms\Components\TextInput::make('phone_number')
+                            ->label('Phone Number')
+                            ->tel()
+                            ->placeholder('628123456789')
+                            ->maxLength(20),
+
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('bank_name')
+                            ->label('Bank Name')
+                            ->maxLength(100),
+
+                        Forms\Components\TextInput::make('bank_account_number')
+                            ->label('Account Number')
+                            ->maxLength(50),
+
+                        Forms\Components\TextInput::make('bank_account_name')
+                            ->label('Account Holder')
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -117,6 +143,16 @@ class CafeResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('phone_number')
+                    ->label('phone_number')
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('email')
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('bank_name')
+                    ->label('Bank')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -199,6 +235,29 @@ class CafeResource extends Resource
                             ->color('success')
                             ->columnSpanFull(),
                     ]),
+
+                Infolists\Components\Section::make('Contact & Payment')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('phone_number')
+                            ->formatStateUsing(fn ($state) => $state ? "https://wa.me/{$state}" : null)
+                            ->url(fn ($state) => $state ? "https://wa.me/{$state}" : null)
+                            ->openUrlInNewTab()
+                            ->label('WhatsApp')
+                            ->icon('heroicon-o-phone'),
+
+                        Infolists\Components\TextEntry::make('email')
+                            ->icon('heroicon-o-envelope'),
+
+                        Infolists\Components\TextEntry::make('bank_name')
+                            ->label('Bank'),
+
+                        Infolists\Components\TextEntry::make('bank_account_number')
+                            ->label('Account Number'),
+
+                        Infolists\Components\TextEntry::make('bank_account_name')
+                            ->label('Account Holder'),
+                    ])
+                    ->columns(2),
 
                 Infolists\Components\Section::make('Timestamps')
                     ->schema([
