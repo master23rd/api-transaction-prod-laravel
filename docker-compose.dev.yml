@@ -14,15 +14,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: awake-app-dev
-    container_name: awake-app-dev
+    image: api-app-dev
+    container_name: api-app-dev
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - awake-network
+      - api-network
     depends_on:
       - database
 
@@ -31,7 +31,7 @@ services:
   # ---------------------------------------------------------------------------
   nginx:
     image: nginx:alpine
-    container_name: awake-nginx-dev
+    container_name: api-nginx-dev
     restart: unless-stopped
     ports:
       - "8000:80"
@@ -39,7 +39,7 @@ services:
       - ./src:/var/www/html:cached
       - ./nginx.dev.conf:/etc/nginx/conf.d/default.conf
     networks:
-      - awake-network
+      - api-network
     depends_on:
       - app
 
@@ -48,28 +48,28 @@ services:
   # ---------------------------------------------------------------------------
   database:
     image: mysql:8.0
-    container_name: awake-database
+    container_name: api-database
     restart: unless-stopped
     ports:
       - "3307:3306"
     env_file:
       - .env.docker
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-awake}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-db_api}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
       MYSQL_USER: ${MYSQL_USER:-laravel}
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - awake-dbdata:/var/lib/mysql
+      - api-dbdata:/var/lib/mysql
     networks:
-      - awake-network
+      - api-network
 
 networks:
-  awake-network:
+  api-network:
     driver: bridge
 
 volumes:
-  awake-dbdata:
+  api-dbdata:
     driver: local
