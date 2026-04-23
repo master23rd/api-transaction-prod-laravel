@@ -50,6 +50,11 @@ class CafeService
             'thumbnail_url' => $cafe->thumbnail ? url(Storage::url($cafe->thumbnail)) : null,
             'about' => $cafe->about,
             'facilities' => $cafe->facilities ?? [],
+            'phone_number' => $cafe->phone_number,
+            'email' => $cafe->email,
+            'bank_name' => $cafe->bank_name,
+            'bank_account_number' => $cafe->bank_account_number,
+            'bank_account_name' => $cafe->bank_account_name,
             'city' => $cafe->city ? [
                 'id' => $cafe->city->id,
                 'name' => $cafe->city->name,
@@ -70,6 +75,11 @@ class CafeService
             'about' => $cafe->about,
             'facilities' => $cafe->facilities ?? [],
             'manager_name' => $cafe->manager_name,
+            'phone_number' => $cafe->phone_number,
+            'email' => $cafe->email,
+            'bank_name' => $cafe->bank_name,
+            'bank_account_number' => $cafe->bank_account_number,
+            'bank_account_name' => $cafe->bank_account_name,
             'city' => $cafe->city ? [
                 'id' => $cafe->city->id,
                 'name' => $cafe->city->name,
