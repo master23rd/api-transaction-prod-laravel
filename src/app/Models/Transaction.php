@@ -52,4 +52,9 @@ class Transaction extends Model
     {
         return $this->hasOne(WalletTransaction::class);
     }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
 }
