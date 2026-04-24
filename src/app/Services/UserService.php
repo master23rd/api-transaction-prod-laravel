@@ -44,7 +44,9 @@ class UserService
             // Create wallet
             Wallet::create([
                 'user_id' => $user->id,
+                'branch_id' => $data['branch_id'] ?? null,
                 'balance' => 0,
+                
             ]);
 
             // INSERT USER DETAIL (BARU)
@@ -143,6 +145,11 @@ class UserService
             'email_verified_at' => $user->email_verified_at,
             'roles' => $user->getRoleNames(),
             'wallet_balance' => $user->wallet?->balance ?? 0,
+            'branch' => 
+                $user->wallet && $user->wallet->branch ? [
+                    'id' => $user->wallet->branch->id,
+                    'name' => $user->wallet->branch->name,
+                ] : null,
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,
         ];

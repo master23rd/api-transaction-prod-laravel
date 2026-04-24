@@ -39,6 +39,7 @@ class AuthController extends Controller
             'kids' => 'nullable|integer',
             'number_contact_person' => 'nullable|string',
             'ktp_photos' => 'nullable|url',
+            'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         $result = $this->authService->register($validated);
