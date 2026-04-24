@@ -23,6 +23,8 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Product';
 
+    protected static ?string $navigationLabel = 'Produk';
+
     protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'name';

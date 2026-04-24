@@ -24,6 +24,8 @@ class WalletResource extends Resource
 
     protected static ?string $navigationGroup = 'Finance';
 
+    protected static ?string $navigationLabel = 'Tabungan';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form

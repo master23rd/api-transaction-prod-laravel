@@ -23,7 +23,9 @@ class WalletTransactionResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationLabel = 'Wallet Transactions';
+    // protected static ?string $navigationLabel = 'Wallet Transactions';
+    protected static ?string $navigationLabel = 'Transaksi Tabungan';
+
 
     public static function form(Form $form): Form
     {
