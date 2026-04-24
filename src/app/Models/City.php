@@ -26,4 +26,9 @@ class City extends Model
     {
         return $this->hasMany(Cafe::class);
     }
+
+    public function brances(): HasMany
+    {
+        return $this->hasMany(Branch::class);
+    }
 }
