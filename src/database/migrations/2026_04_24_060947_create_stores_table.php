@@ -10,6 +10,12 @@ return new class extends Migration {
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
 
+            // RELASI KE BRANCH (WAJIB)
+            $table->foreignId('branch_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->index();
+
             $table->string('name');
             $table->string('slug')->unique();
 
@@ -19,6 +25,9 @@ return new class extends Migration {
 
             $table->timestamps();
             $table->softDeletes();
+
+            // optional index tambahan
+            $table->index(['branch_id', 'is_active']);
         });
     }
 

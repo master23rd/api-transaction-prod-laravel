@@ -92,6 +92,23 @@ class ProductResource extends Resource
                             ->helperText('Featured products will be displayed in the "Featured For You" section')
                             ->default(false),
                     ]),
+                
+                Forms\Components\Select::make('store_id')
+                    ->label('Store')
+                    ->options(function ($get) {
+                        if (!$get('branch_id')) return [];
+
+                        return \App\Models\Store::whereHas('branches', function ($q) use ($get) {
+                            $q->where('branch_id', $get('branch_id'));
+                        })->pluck('name', 'id');
+                    })
+                    ->required(),
+                
+                Forms\Components\Select::make('branch_id')
+                    ->label('Branch')
+                    ->options(\App\Models\Branch::pluck('name', 'id'))
+                    ->reactive()
+                    ->afterStateUpdated(fn ($state, $set) => $set('store_id', null)),
             ]);
     }
 

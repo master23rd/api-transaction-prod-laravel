@@ -18,9 +18,9 @@ class Store extends Model
     }
 
     // branch relation
-    public function branches()
+    public function branch()
     {
-        return $this->belongsToMany(Branch::class, 'store_branch');
+        return $this->belongsTo(Branch::class);
     }
 
     // products

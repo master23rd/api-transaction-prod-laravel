@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,          // Cities
             ProductSeeder::class,       // Products (depends on Category)
             ProductOptionSeeder::class, // Product options (depends on Product)
+            BranchSeeder::class,        // branch seeder
             CafeSeeder::class,          // Cafes (depends on City)
             CafeTimeSlotSeeder::class,  // Cafe time slots (depends on Cafe)
             WalletSeeder::class,        // User wallets (depends on User)

@@ -35,9 +35,21 @@ class Wallet extends Model
         return $this->belongsToMany(Branch::class, 'wallet_branch');
     }
 
-    //relations to store 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    // akses store via transaksi
     public function stores()
     {
-        return $this->belongsToMany(Store::class, 'store_wallet'); 
+        return $this->belongsToMany(Store::class, 'transactions')
+            ->withTimestamps();
     }
+
+    //relations to store 
+    // public function stores()
+    // {
+    //     return $this->belongsToMany(Store::class, 'store_wallet'); 
+    // }
 }

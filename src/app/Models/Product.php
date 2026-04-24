@@ -52,4 +52,11 @@ class Product extends Model
     {
         return $this->belongsTo(Store::class);
     }
+
+    public function wallets()
+    {
+        return \App\Models\Wallet::whereHas('branches.stores.products', function ($q) {
+            $q->where('products.id', $this->id);
+        });
+    }
 }

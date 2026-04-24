@@ -73,14 +73,9 @@ class Branch extends Model
     }
 
     // store relation
-    public function storeBranches()
-    {
-        return $this->hasMany(StoreBranch::class);
-    }
-
     public function stores()
     {
-        return $this->belongsToMany(Store::class, 'store_branch');
+        return $this->hasMany(Store::class);
     }
 
     // time slots
