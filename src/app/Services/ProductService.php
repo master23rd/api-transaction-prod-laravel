@@ -67,6 +67,18 @@ class ProductService
                 'name' => $product->category->name,
                 'slug' => $product->category->slug,
             ] : null,
+            // ✅ STORE
+            'store' => $product->store ? [
+                'id' => $product->store->id,
+                'name' => $product->store->name,
+                'slug' => $product->store->slug,
+            ] : null,
+
+            // ✅ BRANCH (via store)
+            'branch' => $product->store && $product->store->branch ? [
+                'id' => $product->store->branch->id,
+                'name' => $product->store->branch->name,
+            ] : null,
         ];
     }
 
@@ -88,6 +100,18 @@ class ProductService
                 'id' => $product->category->id,
                 'name' => $product->category->name,
                 'slug' => $product->category->slug,
+            ] : null,
+            // ✅ STORE
+            'store' => $product->store ? [
+                'id' => $product->store->id,
+                'name' => $product->store->name,
+                'slug' => $product->store->slug,
+            ] : null,
+
+            // ✅ BRANCH (via store)
+            'branch' => $product->store && $product->store->branch ? [
+                'id' => $product->store->branch->id,
+                'name' => $product->store->branch->name,
             ] : null,
             'options' => $this->formatOptions($product->options),
             'created_at' => $product->created_at?->toISOString(),
