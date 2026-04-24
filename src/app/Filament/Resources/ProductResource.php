@@ -93,22 +93,25 @@ class ProductResource extends Resource
                             ->default(false),
                     ]),
                 
+                // Forms\Components\Select::make('branch_id')
+                //     ->label('Branch')
+                //     ->options(\App\Models\Branch::pluck('name', 'id'))
+                //     ->reactive()
+                //     ->afterStateUpdated(fn ($state, $set) => $set('store_id', null)),
+                
                 Forms\Components\Select::make('store_id')
                     ->label('Store')
                     ->options(function ($get) {
                         if (!$get('branch_id')) return [];
 
-                        return \App\Models\Store::whereHas('branches', function ($q) use ($get) {
-                            $q->where('branch_id', $get('branch_id'));
-                        })->pluck('name', 'id');
+                        return \App\Models\Store::where('branch_id', $get('branch_id'))
+                            ->pluck('name', 'id');
                     })
-                    ->required(),
-                
-                Forms\Components\Select::make('branch_id')
-                    ->label('Branch')
-                    ->options(\App\Models\Branch::pluck('name', 'id'))
+                    ->getOptionLabelUsing(fn ($value) => \App\Models\Store::find($value)?->name)
+                    ->afterStateUpdated(fn ($state, $set) => $set('store_id', null))
+                    ->required()
                     ->reactive()
-                    ->afterStateUpdated(fn ($state, $set) => $set('store_id', null)),
+                    ->searchable(),
             ]);
     }
 
