@@ -49,6 +49,7 @@ class TransactionService
             $transaction = $this->transactionRepository->create([
                 'user_id' => $user->id,
                 'cafe_id' => $data['cafe_id'],
+                'store_id' => $data['store_id'],
                 'payment_method' => $data['payment_method'],
                 'payment_status' => 'pending',
                 'order_status' => 'pending',
@@ -95,7 +96,7 @@ class TransactionService
                 $this->processWalletPayment($user, $transaction);
             }
 
-            return $transaction->fresh(['cafe', 'details.product', 'details.options.productOption']);
+            return $transaction->fresh(['cafe', 'store', 'details.product', 'details.options.productOption']);
         });
     }
 
@@ -193,6 +194,7 @@ class TransactionService
         // Create new transaction with same cafe and items
         $data = [
             'cafe_id' => $originalTransaction->cafe_id,
+            'store_id' => $originalTransaction->store_id,
             'payment_method' => 'wallet',
             'items' => $items,
         ];
@@ -243,6 +245,10 @@ class TransactionService
                 'id' => $transaction->cafe->id,
                 'name' => $transaction->cafe->name,
             ] : null,
+            'store' => $transaction->store ? [
+                'id' => $transaction->store->id,
+                'name' => $transaction->store->name,
+            ] : null,
             'payment_status' => $transaction->payment_status,
             'order_status' => $transaction->order_status,
             'payment_method' => $transaction->payment_method,
@@ -281,6 +287,11 @@ class TransactionService
                 'id' => $transaction->cafe->id,
                 'name' => $transaction->cafe->name,
                 'slug' => $transaction->cafe->slug,
+            ] : null,
+            'store' => $transaction->store ? [
+                'id' => $transaction->store->id,
+                'name' => $transaction->store->name,
+                'slug' => $transaction->store->slug,
             ] : null,
             'payment_status' => $transaction->payment_status,
             'order_status' => $transaction->order_status,

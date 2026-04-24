@@ -187,11 +187,12 @@ class UserService
             ->first();
 
         $favoriteCafe = DB::table('transactions')
-            ->join('cafes', 'cafes.id', '=', 'transactions.cafe_id')
+            // ->join('cafes', 'cafes.id', '=', 'transactions.cafe_id')
+            ->join('stores', 'stores.id', '=', 'transactions.store_id')
             ->where('transactions.user_id', $user->id)
             ->where('transactions.payment_status', 'paid')
-            ->select('cafes.id', 'cafes.name', DB::raw('COUNT(*) as total_visits'))
-            ->groupBy('cafes.id', 'cafes.name')
+            ->select('stores.id', 'stores.name', DB::raw('COUNT(*) as total_visits'))
+            ->groupBy('stores.id', 'stores.name')
             ->orderByDesc('total_visits')
             ->first();
 
@@ -214,11 +215,11 @@ class UserService
                 'name' => $favoriteProduct->name,
                 'total_ordered' => (int) $favoriteProduct->total_ordered,
             ] : null,
-            'favorite_cafe' => $favoriteCafe ? [
-                'id' => $favoriteCafe->id,
-                'name' => $favoriteCafe->name,
-                'total_visits' => (int) $favoriteCafe->total_visits,
-            ] : null,
+            // 'favorite_cafe' => $favoriteCafe ? [
+            //     'id' => $favoriteCafe->id,
+            //     'name' => $favoriteCafe->name,
+            //     'total_visits' => (int) $favoriteCafe->total_visits,
+            // ] : null,
             'member_since' => $user->created_at->toISOString(),
             'member_days' => $user->created_at->diffInDays(now()),
         ];

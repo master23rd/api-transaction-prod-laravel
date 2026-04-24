@@ -32,6 +32,7 @@ class CityService
             'photo' => $city->photo,
             'photo_url' => $city->photo ? url(Storage::url($city->photo)) : null,
             'cafes_count' => $city->cafes_count ?? $city->cafes()->count(),
+            'branches_count' => $city->branches_count ?? $city->branches()->count(),
             'created_at' => $city->created_at?->toISOString(),
         ];
     }

@@ -24,7 +24,8 @@ class CreateTransaction extends CreateRecord
         return [
             Step::make('Order Information')
                 ->icon('heroicon-o-user')
-                ->description('Select customer and cafe')
+                // ->description('Select customer and cafe')
+                ->description('Select customer and store')
                 ->schema([
                     Forms\Components\Select::make('user_id')
                         ->label('Customer')
@@ -34,9 +35,15 @@ class CreateTransaction extends CreateRecord
                         ->searchable()
                         ->preload()
                         ->required(),
-                    Forms\Components\Select::make('cafe_id')
-                        ->label('Koperasi')
-                        ->relationship('cafe', 'name')
+                    // Forms\Components\Select::make('cafe_id')
+                    //     ->label('Koperasi')
+                    //     ->relationship('cafe', 'name')
+                    //     ->searchable()
+                    //     ->preload()
+                    //     ->required(),
+                    Forms\Components\Select::make('store_id')
+                        ->label('Koperasi Usaha')
+                        ->relationship('store', 'name')
                         ->searchable()
                         ->preload()
                         ->required(),

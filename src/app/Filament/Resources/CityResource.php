@@ -59,9 +59,13 @@ class CityResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('cafes_count')
+                // Tables\Columns\TextColumn::make('cafes_count')
+                //     ->label('Koperasi')
+                //     ->counts('cafes')
+                //     ->sortable(),
+                Tables\Columns\TextColumn::make('branches_count')
                     ->label('Koperasi')
-                    ->counts('cafes')
+                    ->counts('branches')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

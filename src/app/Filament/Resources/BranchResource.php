@@ -25,7 +25,7 @@ class BranchResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     
     //additional
-    protected static ?string $navigationLabel = 'Branch';
+    protected static ?string $navigationLabel = 'Koperasi';
 
     protected static ?string $navigationGroup = 'Location';
 
@@ -35,12 +35,12 @@ class BranchResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return 'branch';
+        return 'Koperasi';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'branches';
+        return 'Koperasi';
     }
     //end of additional
 
@@ -72,13 +72,13 @@ class BranchResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('thumbnail')
                             ->image()
-                            ->directory('cafes/thumbnails')
+                            ->directory('branches/thumbnails')
                             ->imageEditor(),
                         Forms\Components\FileUpload::make('photos')
                             ->image()
                             ->multiple()
                             ->reorderable()
-                            ->directory('cafes/photos')
+                            ->directory('branches/photos')
                             ->imageEditor()
                             ->maxFiles(10),
                     ])->columns(2),

@@ -19,19 +19,20 @@ class WalletRepository
         return $this->applyFilters(WalletTransaction::query(), $filters)
             ->where('wallet_id', $walletId)
             ->with(['transaction.cafe'])
+            ->with(['transaction.store'])
             ->latest()
             ->paginate($perPage);
     }
 
     public function findTransactionById(int $id): ?WalletTransaction
     {
-        return WalletTransaction::with(['wallet.user', 'transaction.cafe'])
+        return WalletTransaction::with(['wallet.user', 'transaction.cafe','transaction.store'])
             ->find($id);
     }
 
     public function findTransactionByIdAndWallet(int $id, int $walletId): ?WalletTransaction
     {
-        return WalletTransaction::with(['transaction.cafe'])
+        return WalletTransaction::with(['transaction.cafe', 'transaction.store'])
             ->where('id', $id)
             ->where('wallet_id', $walletId)
             ->first();

@@ -9,26 +9,30 @@ class CityRepository
 {
     public function getAll(): Collection
     {
-        return City::withCount('cafes')
+        //return City::withCount('cafes')
+        return City::withCount('branches')
             ->orderBy('name')
             ->get();
     }
 
     public function findById(int $id): ?City
     {
-        return City::withCount('cafes')->find($id);
+        // return City::withCount('cafes')->find($id);
+        return City::withCount('branches')->find($id);
     }
 
     public function findBySlug(string $slug): ?City
     {
-        return City::withCount('cafes')
+        //return City::withCount('cafes')
+        return City::withCount('branches')
             ->where('slug', $slug)
             ->first();
     }
 
     public function findByIdentifier(string $identifier): ?City
     {
-        return City::withCount('cafes')
+        //return City::withCount('cafes')
+        return City::withCount('branches')
             ->where('id', $identifier)
             ->orWhere('slug', $identifier)
             ->first();

@@ -18,6 +18,18 @@ class StoreResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $navigationGroup = 'Product';
     protected static ?int $navigationSort = 1;
+    protected static ?string $navigationLabel = 'Toko';
+
+    public static function getModelLabel(): string
+    {
+        return 'store';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'store';
+    }
+
 
     public static function form(Form $form): Form
     {

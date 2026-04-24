@@ -13,7 +13,7 @@ class TransactionRepository
     {
         return $this->applyFilters(Transaction::query(), $filters)
             ->where('user_id', $userId)
-            ->with(['cafe', 'details.product'])
+            ->with(['cafe','store', 'details.product'])
             ->latest()
             ->paginate($perPage);
     }
@@ -22,6 +22,7 @@ class TransactionRepository
     {
         return Transaction::with([
             'cafe',
+            'store',
             'user',
             'details.product.category',
             'details.options.productOption',
@@ -33,6 +34,7 @@ class TransactionRepository
     {
         return Transaction::with([
             'cafe',
+            'store',
             'details.product.category',
             'details.options.productOption',
             'walletTransaction',
@@ -55,7 +57,7 @@ class TransactionRepository
 
     public function getActiveByUser(int $userId): Collection
     {
-        return Transaction::with(['cafe', 'details.product'])
+        return Transaction::with(['cafe','store', 'details.product'])
             ->where('user_id', $userId)
             ->whereNotIn('order_status', ['finished', 'cancelled'])
             ->latest()
@@ -74,6 +76,10 @@ class TransactionRepository
 
         if (!empty($filters['cafe_id'])) {
             $query->where('cafe_id', $filters['cafe_id']);
+        }
+
+        if (!empty($filters['store_id'])) {
+            $query->where('store_id', $filters['store_id']);
         }
 
         if (!empty($filters['date_from'])) {

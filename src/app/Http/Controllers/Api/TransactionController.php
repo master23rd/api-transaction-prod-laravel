@@ -19,12 +19,13 @@ class TransactionController extends Controller
             'payment_status' => 'nullable|string|in:pending,paid,failed,refunded,cancelled',
             'order_status' => 'nullable|string|in:pending,preparing,finished,cancelled',
             'cafe_id' => 'nullable|integer|exists:cafes,id',
+            'store_id' => 'nullable|integer|exists:stores,id',
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date',
             'per_page' => 'nullable|integer|min:1|max:50',
         ]);
 
-        $filters = $request->only(['payment_status', 'order_status', 'cafe_id', 'date_from', 'date_to']);
+        $filters = $request->only(['payment_status', 'order_status', 'cafe_id','store_id', 'date_from', 'date_to']);
         $perPage = $request->input('per_page', 10);
 
         $transactions = $this->transactionService->getUserTransactions(
@@ -80,6 +81,7 @@ class TransactionController extends Controller
     {
         $validated = $request->validate([
             'cafe_id' => 'required|integer|exists:cafes,id',
+            'store_id' => 'nullable|integer|exists:stores,id',
             'payment_method' => 'required|string|in:wallet',
             'discount' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',

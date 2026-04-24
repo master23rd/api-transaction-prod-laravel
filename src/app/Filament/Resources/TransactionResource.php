@@ -51,9 +51,16 @@ class TransactionResource extends Resource
                             ->preload()
                             ->required()
                             ->disabled(),
-                        Forms\Components\Select::make('cafe_id')
-                            ->label('Koperasi')
-                            ->relationship('cafe', 'name')
+                        // Forms\Components\Select::make('cafe_id')
+                        //     ->label('Koperasi')
+                        //     ->relationship('cafe', 'name')
+                        //     ->searchable()
+                        //     ->preload()
+                        //     ->required()
+                        //     ->disabled(),
+                        Forms\Components\Select::make('store_id')
+                            ->label('Toko')
+                            ->relationship('store', 'name')
                             ->searchable()
                             ->preload()
                             ->required()
@@ -141,8 +148,12 @@ class TransactionResource extends Resource
                     ->label('Customer')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('cafe.name')
-                    ->label('Koperasi')
+                // Tables\Columns\TextColumn::make('cafe.name')
+                //     ->label('Koperasi')
+                //     ->searchable()
+                //     ->sortable(),
+                Tables\Columns\TextColumn::make('store.name')
+                    ->label('Toko')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_items')
@@ -207,8 +218,12 @@ class TransactionResource extends Resource
                         'finished' => 'Finished',
                         'cancelled' => 'Cancelled',
                     ]),
-                Tables\Filters\SelectFilter::make('cafe')
-                    ->relationship('cafe', 'name')
+                // Tables\Filters\SelectFilter::make('cafe')
+                //     ->relationship('cafe', 'name')
+                //     ->searchable()
+                //     ->preload(),
+                Tables\Filters\SelectFilter::make('store')
+                    ->relationship('store', 'name')
                     ->searchable()
                     ->preload(),
                 Tables\Filters\SelectFilter::make('payment_method')
@@ -321,8 +336,11 @@ class TransactionResource extends Resource
                         Infolists\Components\TextEntry::make('user.name')
                             ->label('Customer')
                             ->icon('heroicon-o-user'),
-                        Infolists\Components\TextEntry::make('cafe.name')
-                            ->label('Koperasi')
+                        // Infolists\Components\TextEntry::make('cafe.name')
+                        //     ->label('Koperasi')
+                        //     ->icon('heroicon-o-building-storefront'),
+                        Infolists\Components\TextEntry::make('store.name')
+                            ->label('Toko')
                             ->icon('heroicon-o-building-storefront'),
                     ])->columns(4),
 

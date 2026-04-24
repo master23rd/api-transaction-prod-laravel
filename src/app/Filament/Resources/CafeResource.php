@@ -21,7 +21,7 @@ class CafeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
-    protected static ?string $navigationLabel = 'Koperasi';
+    protected static ?string $navigationLabel = 'cafe';
 
     protected static ?string $navigationGroup = 'Location';
 
@@ -29,14 +29,16 @@ class CafeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getModelLabel(): string
     {
-        return 'Koperasi';
+        return 'Cafe';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Koperasi';
+        return 'Cafe';
     }
 
     public static function form(Form $form): Form

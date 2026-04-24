@@ -131,6 +131,10 @@ class WalletService
                 'id' => $transaction->transaction->cafe->id,
                 'name' => $transaction->transaction->cafe->name,
             ] : null,
+            'branch' => $transaction->transaction?->branch ? [
+                'id' => $transaction->transaction->branch->id,
+                'name' => $transaction->transaction->branch->name,
+            ] : null,
             'created_at' => $transaction->created_at?->toISOString(),
         ];
     }
@@ -155,6 +159,10 @@ class WalletService
                 'cafe' => $transaction->transaction->cafe ? [
                     'id' => $transaction->transaction->cafe->id,
                     'name' => $transaction->transaction->cafe->name,
+                ] : null,
+                'branch' => $transaction->transaction->branch ? [
+                    'id' => $transaction->transaction->branch->id,
+                    'name' => $transaction->transaction->branch->name,
                 ] : null,
             ] : null,
             'created_at' => $transaction->created_at?->toISOString(),

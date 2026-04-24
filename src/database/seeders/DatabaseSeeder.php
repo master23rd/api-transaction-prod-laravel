@@ -55,11 +55,11 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,       // Products (depends on Category)
             ProductOptionSeeder::class, // Product options (depends on Product)
             BranchSeeder::class,        // branch seeder
-            CafeSeeder::class,          // Cafes (depends on City)
-            CafeTimeSlotSeeder::class,  // Cafe time slots (depends on Cafe)
+            // CafeSeeder::class,          // Cafes (depends on City)
+            // CafeTimeSlotSeeder::class,  // Cafe time slots (depends on Cafe)
             WalletSeeder::class,        // User wallets (depends on User)
-            TransactionSeeder::class,   // Transactions (depends on User, Cafe)
-            TransactionDetailSeeder::class, // Transaction details (depends on Transaction, Product)
+            // TransactionSeeder::class,   // Transactions (depends on User, Cafe)
+            // TransactionDetailSeeder::class, // Transaction details (depends on Transaction, Product)
             WalletTransactionSeeder::class, // Wallet transactions (depends on Wallet, Transaction)
         ]);
     }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Cafe;
+use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -15,9 +16,9 @@ class TransactionSeeder extends Seeder
     public function run(): void
     {
         $customers = User::role('customer')->take(5)->get();
-        $cafes = Cafe::all();
+        $stores = Store::all();
 
-        if ($customers->isEmpty() || $cafes->isEmpty()) {
+        if ($customers->isEmpty() || $stores->isEmpty()) {
             return;
         }
 
@@ -27,7 +28,7 @@ class TransactionSeeder extends Seeder
         // Create 10+ transactions
         for ($i = 0; $i < 12; $i++) {
             $customer = $customers->random();
-            $cafe = $cafes->random();
+            $store = $stores->random();
 
             $paymentStatus = fake()->randomElement($paymentStatuses);
             $orderStatus = $paymentStatus === 'paid'
@@ -40,7 +41,8 @@ class TransactionSeeder extends Seeder
             // Actual totals will be calculated in TransactionDetailSeeder
             Transaction::create([
                 'user_id' => $customer->id,
-                'cafe_id' => $cafe->id,
+                // 'cafe_id' => $cafe->id,
+                'store_id' => $store->id,
                 'payment_status' => $paymentStatus,
                 'order_status' => $orderStatus,
                 'grand_total_amount' => 0, // Will be updated by TransactionDetailSeeder

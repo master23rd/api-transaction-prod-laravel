@@ -39,6 +39,8 @@ class UserRepository
 
     public function getManagers()
     {
-        return User::role('cafe_manager')->get();
+        // return User::role('cafe_manager')->get();
+        return User::role('branch_manager')->get();
+
     }
 }
