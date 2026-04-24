@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\CafeController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CityController;
@@ -52,6 +53,12 @@ Route::middleware('throttle:api')->group(function () {
     Route::get('/cafes/newest', [CafeController::class, 'newest']);
     Route::get('/cafes/{id}', [CafeController::class, 'show']);
     Route::get('/cities/{cityId}/cafes', [CafeController::class, 'byCity']);
+
+    Route::get('/branches', [BranchController::class, 'index']);
+    Route::get('/branches/popular', [BranchController::class, 'popular']);
+    Route::get('/branches/newest', [BranchController::class, 'newest']);
+    Route::get('/branches/{id}', [BranchController::class, 'show']);
+    Route::get('/cities/{cityId}/branches', [BranchController::class, 'byCity']);
 
     // Products
     Route::get('/products', [ProductController::class, 'index']);

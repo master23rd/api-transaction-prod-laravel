@@ -23,6 +23,7 @@ class Transaction extends Model
         'total_items',
         'proof_of_payment',
         'cafe_id',
+        'store_id',
         'payment_method',
     ];
 
