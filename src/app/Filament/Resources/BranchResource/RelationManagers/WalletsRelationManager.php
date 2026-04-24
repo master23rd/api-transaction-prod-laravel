@@ -39,6 +39,8 @@ class WalletsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Customer')
                     ->searchable(),
+                // Tables\Columns\TextColumn::make('user.name')
+                //     ->formatStateUsing(fn ($record) => $record->user->name . ' - Rp ' . number_format($record->balance)),
 
                 Tables\Columns\TextColumn::make('balance')
                     ->money('IDR')
@@ -54,6 +56,12 @@ class WalletsRelationManager extends RelationManager
                     ->recordSelectOptionsQuery(
                         fn (Builder $query) => $query->with('user')
                     ),
+                    //select only non branch wallet
+                    // ->recordSelectOptionsQuery(
+                    //     fn (Builder $query) => $query->whereDoesntHave('branches', function ($q) {
+                    //         $q->where('branch_id', $this->ownerRecord->id);
+                    //     })
+                    // )
             ])
             ->actions([
                 Tables\Actions\DetachAction::make()

@@ -34,4 +34,10 @@ class Wallet extends Model
     {
         return $this->belongsToMany(Branch::class, 'wallet_branch');
     }
+
+    //relations to store 
+    public function stores()
+    {
+        return $this->belongsToMany(Store::class, 'store_wallet'); 
+    }
 }

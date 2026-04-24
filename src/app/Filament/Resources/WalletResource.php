@@ -266,6 +266,7 @@ class WalletResource extends Resource
     {
         return [
             RelationManagers\WalletTransactionsRelationManager::class,
+            RelationManagers\BranchesRelationManager::class,
         ];
     }
 

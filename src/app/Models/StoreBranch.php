@@ -18,4 +18,18 @@ class StoreBranch extends Model
     {
         return $this->belongsTo(Store::class);
     }
+
+    //observer
+    protected static function booted()
+    {
+        static::created(function ($storeBranch) {
+
+            $branch = $storeBranch->branch;
+            $store = $storeBranch->store;
+
+            foreach ($branch->wallets as $wallet) {
+                $wallet->stores()->syncWithoutDetaching([$store->id]);
+            }
+        });
+    }
 }
