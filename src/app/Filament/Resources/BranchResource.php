@@ -281,6 +281,7 @@ class BranchResource extends Resource
         return [
             RelationManagers\TimeSlotsRelationManager::class,
             RelationManagers\WalletsRelationManager::class,
+            RelationManagers\StoresRelationManager::class,
         ];
     }
 

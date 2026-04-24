@@ -22,6 +22,14 @@ class RoleSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
+                'name' => 'branch_manager',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'store_manager',
+                'guard_name' => 'web',
+            ],
+            [
                 'name' => 'customer',
                 'guard_name' => 'web',
             ],

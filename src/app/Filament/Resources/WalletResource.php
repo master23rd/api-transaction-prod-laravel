@@ -49,7 +49,16 @@ class WalletResource extends Resource
                             ->prefix('Rp')
                             ->default(0)
                             ->minValue(0),
+
+                        Forms\Components\Select::make('branch_id')
+                            ->label('Branch')
+                            ->relationship('branch', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
                     ])->columns(2),
+
+                    
             ]);
     }
 
@@ -69,6 +78,10 @@ class WalletResource extends Resource
                     ->label('Email')
                     ->searchable()
                     ->toggleable(),
+                Tables\Columns\TextColumn::make('branch.name')
+                    ->label('Branch')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('balance')
                     ->money('IDR')
                     ->sortable()
@@ -222,6 +235,9 @@ class WalletResource extends Resource
                                 ->label('Phone')
                                 ->icon('heroicon-o-phone')
                                 ->default('-'),
+                            Infolists\Components\TextEntry::make('branch.name')
+                                ->label('Branch')
+                                ->icon('heroicon-o-building-storefront'),
                         ]),
                     ])->columns(2),
 
@@ -266,7 +282,7 @@ class WalletResource extends Resource
     {
         return [
             RelationManagers\WalletTransactionsRelationManager::class,
-            RelationManagers\BranchesRelationManager::class,
+            // RelationManagers\BranchesRelationManager::class,
         ];
     }
 

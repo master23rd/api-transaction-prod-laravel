@@ -62,14 +62,9 @@ class Branch extends Model
     }
 
     // wallet relation
-    public function walletBranches()
-    {
-        return $this->hasMany(WalletBranch::class);
-    }
-
     public function wallets()
     {
-        return $this->belongsToMany(Wallet::class, 'wallet_branch');
+        return $this->hasMany(\App\Models\Wallet::class);
     }
 
     // store relation

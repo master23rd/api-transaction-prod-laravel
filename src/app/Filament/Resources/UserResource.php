@@ -109,14 +109,14 @@ class UserResource extends Resource
 
                 Forms\Components\Section::make('Role & Verification')
                     ->schema([
-                        // Forms\Components\Select::make('roles')
-                        //     ->label('Role')
-                        //     ->relationship('roles', 'name')
-                        //     ->options(
-                        //         Role::whereIn('name', ['cafe_manager', 'customer'])->pluck('name', 'id')
-                        //     )
-                        //     ->preload()
-                        //     ->required(),
+                        Forms\Components\Select::make('roles')
+                            ->label('Role')
+                            ->relationship('roles', 'name')
+                            ->options(
+                                Role::whereIn('name', ['cafe_manager','branch_manager','customer'])->pluck('name', 'id')
+                            )
+                            ->preload()
+                            ->required(),
                         Forms\Components\DateTimePicker::make('email_verified_at')
                             ->label('Email Verified At'),
                     ])->columns(2),
@@ -141,12 +141,16 @@ class UserResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'cafe_manager' => 'warning',
+                        'branch_manager' => 'warning',
+                        'store_manager' => 'warning',
                         'customer' => 'success',
                         'admin' => 'danger',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'cafe_manager' => 'Manager',
+                        'branch_manager' => 'Manager',
+                        'store_manager' => 'Manager',
                         'customer' => 'Customer',
                         'admin' => 'Admin',
                         default => $state,
@@ -178,6 +182,8 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->options([
                         'cafe_manager' => 'Manager',
+                        'branch_manager' => 'Manager',
+                        'store_manager' => 'Manager',
                         'customer' => 'Customer',
                     ])
                     ->preload()
@@ -228,12 +234,16 @@ class UserResource extends Resource
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
                                 'cafe_manager' => 'warning',
+                                'branch_manager' => 'warning',
+                                'store_manager' => 'warning',
                                 'customer' => 'success',
                                 'admin' => 'danger',
                                 default => 'gray',
                             })
                             ->formatStateUsing(fn (string $state): string => match ($state) {
                                 'cafe_manager' => 'Manager',
+                                'branch_manager' => 'Manager',
+                                'store_manager' => 'Manager',
                                 'customer' => 'Customer',
                                 'admin' => 'Admin',
                                 default => $state,

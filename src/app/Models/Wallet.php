@@ -23,16 +23,10 @@ class Wallet extends Model
         return $this->hasMany(WalletTransaction::class);
     }
 
-    // pivot
-    public function walletBranches()
-    {
-        return $this->hasMany(WalletBranch::class);
-    }
-
     // direct relation ke branch (many-to-many)
-    public function branches()
+    public function branch()
     {
-        return $this->belongsToMany(Branch::class, 'wallet_branch');
+        return $this->belongsTo(\App\Models\Branch::class);
     }
 
     public function transactions()

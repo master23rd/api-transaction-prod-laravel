@@ -28,6 +28,15 @@ class DatabaseSeeder extends Seeder
         );
         $manager->assignRole('cafe_manager');
 
+        $managerBranch = User::firstOrCreate(
+            ['email' => 'sidiq@koperasi.com'],
+            [
+                'name' => 'Koperasi Manager',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $managerBranch->assignRole('branch_manager');
+
         // Create customer user
         $customer = User::firstOrCreate(
             ['email' => 'customer@koperasi.com'],
