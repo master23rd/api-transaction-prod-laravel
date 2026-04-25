@@ -7,11 +7,16 @@ use App\Models\WalletTransaction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
+use Filament\Infolists\Components\Actions;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Exports\WalletTransactionExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class WalletTransactionResource extends Resource
 {
@@ -104,19 +109,23 @@ class WalletTransactionResource extends Resource
                         'refund' => 'Refund',
                         default => ucfirst($state),
                     }),
+                Tables\Columns\TextColumn::make('branch.name')
+                    ->label('Koperasi')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('wallet.account_number')
                     ->label('No Rekening')
                     ->searchable()
                     ->copyable(),
-
                 Tables\Columns\TextColumn::make('reference_code')
                     ->label('Ref Code')
                     ->searchable()
                     ->copyable(),
-                Tables\Columns\TextColumn::make('amount')
-                    ->label('Top Up Amount')
-                    ->money('IDR')
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('amount')
+                //     ->label('Top Up Amount')
+                //     ->money('IDR')
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Transfer Amount')
                     ->money('IDR')
@@ -147,26 +156,53 @@ class WalletTransactionResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                // ✅ FILTER TANGGAL
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')
+                            ->label('Dari Tanggal'),
+                        Forms\Components\DatePicker::make('until')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'],
+                                fn ($q) => $q->whereDate('created_at', '>=', $data['from'])
+                            )
+                            ->when($data['until'],
+                                fn ($q) => $q->whereDate('created_at', '<=', $data['until'])
+                            );
+                    }),
+
+                // ✅ FILTER BRANCH
+                Tables\Filters\SelectFilter::make('branch_id')
+                    ->label('Koperasi')
+                    ->relationship('branch', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                // ✅ FILTER TYPE
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'topup' => 'Setor', //'Top Up',
-                        'payment' => 'Tarik', //'Payment',
-                        // 'refund' => 'Refund',
+                        'topup' => 'Setor',
+                        'payment' => 'Tarik',
                     ]),
+
+                // ✅ FILTER STATUS (existing, tapi kita rapihin)
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
                         'approved' => 'Approved',
                         'rejected' => 'Rejected',
-                        // 'cancelled' => 'Cancelled',
                     ]),
+
             ])
             ->actions([
-                Tables\Actions\Action::make('approve')
+                Tables\Actions\Action::make('approved')
                     ->label('Approve')
                     ->icon('heroicon-o-check')
                     ->color('success')
-                    ->visible(fn (WalletTransaction $record): bool => $record->status === 'pending' && $record->type === 'topup')
+                    ->visible(fn (WalletTransaction $record): bool => $record->status === 'pending' && ($record->type === 'topup' || $record->type === 'payment'))
                     ->requiresConfirmation()
                     ->action(function (WalletTransaction $record): void {
                         $record->update(['status' => 'approved']);
@@ -201,6 +237,42 @@ class WalletTransactionResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                // ✅ EXPORT EXCEL
+                Tables\Actions\Action::make('export_excel')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function ($livewire) {
+
+                        $query = $livewire->getFilteredTableQuery();
+
+                        return Excel::download(
+                            new WalletTransactionExport($query),
+                            'transaction-report.xlsx'
+                        );
+                    }),
+
+                // ✅ EXPORT PDF
+                Tables\Actions\Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document')
+                    ->color('danger')
+                    ->action(function ($livewire) {
+
+                        $transactions = $livewire->getFilteredTableQuery()
+                            ->with(['wallet.user', 'branch'])
+                            ->get();
+
+                        $pdf = Pdf::loadView('reports.wallet-transaction-pdf', [
+                            'transactions' => $transactions
+                        ]);
+
+                        return response()->streamDownload(
+                            fn () => print($pdf->output()),
+                            'transaction-report.pdf'
+                        );
+                    }),
             ]);
     }
 
@@ -232,6 +304,12 @@ class WalletTransactionResource extends Resource
                                 'payment' => 'warning',
                                 'refund' => 'info',
                                 default => 'gray',
+                            })
+                            ->formatStateUsing(fn (string $state): string => match ($state) {
+                                'topup' => 'Setor', //'Top Up',
+                                'payment' => 'Tarik', //'Payment',
+                                'refund' => 'Refund',
+                                default => ucfirst($state),
                             }),
                         Infolists\Components\TextEntry::make('status')
                             ->badge()
@@ -266,6 +344,71 @@ class WalletTransactionResource extends Resource
                             ->extraImgAttributes(['class' => 'rounded-lg']),
                     ])
                     ->visible(fn (WalletTransaction $record): bool => $record->proof_of_payment !== null),
+                Infolists\Components\Section::make('Actions')
+                    ->schema([
+                        Actions::make([                    
+                            // ✅ APPROVE
+                            Action::make('approve')
+                                ->label('Approve')
+                                ->icon('heroicon-o-check')
+                                ->color('success')
+                                ->visible(fn (WalletTransaction $record) => $record->status === 'pending')
+                                ->requiresConfirmation()
+                                ->action(function (WalletTransaction $record) {
+
+                                    $wallet = $record->wallet;
+
+                                    if (!$wallet) return;
+
+                                    // LOGIC SALDO
+                                    if ($record->type === 'topup') {
+                                        $wallet->increment('balance', $record->total_amount);
+                                    } elseif ($record->type === 'payment') {
+
+                                        if ($wallet->balance < $record->total_amount) {
+                                            Notification::make()
+                                                ->title('Saldo tidak cukup')
+                                                ->danger()
+                                                ->send();
+                                            return;
+                                        }
+
+                                        $wallet->decrement('balance', $record->total_amount);
+                                    }
+
+                                    $record->update([
+                                        'status' => 'approved',
+                                        'branch_id' => $wallet->branch_id,
+                                    ]);
+
+                                    Notification::make()
+                                        ->title('Transaction approved')
+                                        ->success()
+                                        ->send();
+                                }),
+
+                            // ❌ REJECT
+                            Action::make('reject')
+                                ->label('Reject')
+                                ->icon('heroicon-o-x-mark')
+                                ->color('danger')
+                                ->visible(fn (WalletTransaction $record) => $record->status === 'pending')
+                                ->requiresConfirmation()
+                                ->action(function (WalletTransaction $record) {
+
+                                    $record->update([
+                                        'status' => 'rejected',
+                                    ]);
+
+                                    Notification::make()
+                                        ->title('Transaction rejected')
+                                        ->success()
+                                        ->send();
+                                }),
+
+                        ])
+                    ])
+                    ->visible(fn (WalletTransaction $record) => $record->status === 'pending'),
             ]);
     }
 
@@ -280,5 +423,11 @@ class WalletTransactionResource extends Resource
             'index' => Pages\ListWalletTransactions::route('/'),
             'view' => Pages\ViewWalletTransaction::route('/{record}'),
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['wallet.user', 'branch']);
     }
 }

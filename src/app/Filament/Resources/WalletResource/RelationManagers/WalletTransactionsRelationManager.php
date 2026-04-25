@@ -9,6 +9,9 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Exports\WalletTransactionExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class WalletTransactionsRelationManager extends RelationManager
 {
@@ -100,6 +103,15 @@ class WalletTransactionsRelationManager extends RelationManager
                         'rejected' => 'danger',
                         default => 'gray',
                     }),
+                Tables\Columns\TextColumn::make('branch.name')
+                    ->label('Koperasi')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('reference_code')
+                    ->label('Ref Code')
+                    ->searchable()
+                    ->copyable(),
                 // Tables\Columns\TextColumn::make('service_fee')
                 //     ->money('IDR')
                 //     ->toggleable(isToggledHiddenByDefault: true),
@@ -111,12 +123,39 @@ class WalletTransactionsRelationManager extends RelationManager
                     ->toggleable(),
             ])
             ->filters([
+                // ✅ FILTER TANGGAL
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')
+                            ->label('Dari Tanggal'),
+                        Forms\Components\DatePicker::make('until')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'],
+                                fn ($q) => $q->whereDate('created_at', '>=', $data['from'])
+                            )
+                            ->when($data['until'],
+                                fn ($q) => $q->whereDate('created_at', '<=', $data['until'])
+                            );
+                    }),
+
+                // ✅ FILTER BRANCH
+                Tables\Filters\SelectFilter::make('branch_id')
+                    ->label('Koperasi')
+                    ->relationship('branch', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                // ✅ FILTER TYPE
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'topup' => 'Setor', //'Top Up',
-                        'payment' => 'Tarik', //'Payment',
-                        // 'refund' => 'Refund',
+                        'topup' => 'Setor',
+                        'payment' => 'Tarik',
                     ]),
+
+                // ✅ FILTER STATUS (existing, tapi kita rapihin)
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
@@ -142,6 +181,40 @@ class WalletTransactionsRelationManager extends RelationManager
 
                             $wallet->decrement('balance', $record->total_amount);
                         }
+                    }),
+                // ✅ EXPORT EXCEL
+                Tables\Actions\Action::make('export_excel')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function ($livewire) {
+
+                        $query = $livewire->getFilteredTableQuery();
+
+                        return Excel::download(
+                            new WalletTransactionExport($query),
+                            'transaction-report.xlsx'
+                        );
+                    }),
+
+                // ✅ EXPORT PDF
+                Tables\Actions\Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document')
+                    ->color('danger')
+                    ->action(function ($livewire) {
+
+                        $transactions = $livewire->getFilteredTableQuery()
+                            ->with(['wallet.user', 'branch'])
+                            ->get();
+
+                        $pdf = Pdf::loadView('reports.wallet-transaction-pdf', [
+                            'transactions' => $transactions
+                        ]);
+
+                        return response()->streamDownload(
+                            fn () => print($pdf->output()),
+                            'transaction-report.pdf'
+                        );
                     }),
             ])
             ->actions([

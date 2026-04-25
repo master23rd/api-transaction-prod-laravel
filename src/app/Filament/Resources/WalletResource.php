@@ -15,6 +15,10 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Exports\WalletExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Filament\Tables\Actions\Action;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class WalletResource extends Resource
 {
@@ -50,9 +54,10 @@ class WalletResource extends Resource
                             ->numeric()
                             ->prefix('Rp')
                             ->default(0)
-                            ->minValue(0),
+                            ->minValue(0)
+                            ->disabled(fn (string $operation): bool => $operation === 'edit'),
                         Forms\Components\Select::make('branch_id')
-                            ->label('Branch')
+                            ->label('Koperasi')
                             ->relationship('branch', 'name')
                             ->searchable()
                             ->preload()
@@ -85,7 +90,7 @@ class WalletResource extends Resource
                     ->searchable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('branch.name')
-                    ->label('Branch')
+                    ->label('Koperasi')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('account_number')
@@ -112,16 +117,42 @@ class WalletResource extends Resource
                     ->sortable(),
             ])
             ->filters([
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')
+                            ->label('Dari Tanggal'),
+                        Forms\Components\DatePicker::make('until')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'],
+                                fn ($q) => $q->whereDate('created_at', '>=', $data['from'])
+                            )
+                            ->when($data['until'],
+                                fn ($q) => $q->whereDate('created_at', '<=', $data['until'])
+                            );
+                    }),
+
+                // ✅ FILTER BRANCH
+                Tables\Filters\SelectFilter::make('branch_id')
+                    ->label('Koperasi')
+                    ->relationship('branch', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                // (optional) existing filter
                 Tables\Filters\Filter::make('has_balance')
                     ->label('Has Balance')
                     ->query(fn ($query) => $query->where('balance', '>', 0)),
+
                 Tables\Filters\Filter::make('zero_balance')
                     ->label('Zero Balance')
                     ->query(fn ($query) => $query->where('balance', '=', 0)),
             ])
             ->actions([
                 Tables\Actions\Action::make('topUp')
-                    ->label('Top Up')
+                    ->label('Setor')
                     ->icon('heroicon-o-plus-circle')
                     ->color('success')
                     ->form([
@@ -184,9 +215,19 @@ class WalletResource extends Resource
                             ->numeric()
                             ->prefix('Rp')
                             ->minValue(1000),
-                        Forms\Components\Textarea::make('reason')
-                            ->label('Reason')
+                        // Forms\Components\Textarea::make('reason')
+                        //     ->label('Reason')
+                        //     ->required(),
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'pending' => 'Pending',
+                                'approved' => 'Approved',
+                            ])
+                            ->default('pending')
                             ->required(),
+                        Forms\Components\FileUpload::make('proof_of_payment')
+                            ->image()
+                            ->directory('wallets/proofs'),
                     ])
                     ->action(function (Wallet $record, array $data): void {
                         if ($data['amount'] > $record->balance) {
@@ -203,15 +244,17 @@ class WalletResource extends Resource
                             'amount' => $data['amount'],
                             'total_amount' => $data['amount'],
                             'type' => 'payment',
-                            'status' => 'approved',
+                            'status' => $data['status'],
                             'service_fee' => 0,
                             'branch_id' => $record->branch_id,
                         ]);
 
                         // Update balance
-                        $record->update([
-                            'balance' => $record->balance - $data['amount'],
-                        ]);
+                        if ($data['status'] === 'approved') {
+                            $record->update([
+                                'balance' => $record->balance - $data['amount'],
+                            ]);
+                        }
 
                         Notification::make()
                             ->title('Balance deducted')
@@ -226,6 +269,36 @@ class WalletResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                Action::make('export_excel')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function ($livewire) {
+                        $query = $livewire->getFilteredTableQuery();
+
+                        return Excel::download(
+                            new WalletExport($query),
+                            'wallet-report.xlsx'
+                        );
+                    }),
+                Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document')
+                    ->color('danger')
+                    ->action(function ($livewire) {
+
+                        $wallets = $livewire->getFilteredTableQuery()->get();
+
+                        $pdf = Pdf::loadView('reports.wallet-pdf', [
+                            'wallets' => $wallets
+                        ]);
+
+                        return response()->streamDownload(
+                            fn () => print($pdf->output()),
+                            'wallet-report.pdf'
+                        );
+                    }),
             ]);
     }
 
@@ -256,7 +329,7 @@ class WalletResource extends Resource
                                 ->icon('heroicon-o-phone')
                                 ->default('-'),
                             Infolists\Components\TextEntry::make('branch.name')
-                                ->label('Branch')
+                                ->label('Koperasi')
                                 ->icon('heroicon-o-building-storefront'),
                         ]),
                     ])->columns(2),
