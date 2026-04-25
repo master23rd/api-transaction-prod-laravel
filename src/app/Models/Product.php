@@ -20,6 +20,9 @@ class Product extends Model
         'about',
         'service_time',
         'is_featured',
+        'store_id',
+        'stock', // ✅ tambah
+        'count_click', // ✅ tambah
     ];
 
     protected $casts = [
@@ -58,5 +61,24 @@ class Product extends Model
         return \App\Models\Wallet::whereHas('branches.stores.products', function ($q) {
             $q->where('products.id', $this->id);
         });
+    }
+
+    public function incrementClick(): void
+    {
+        $this->increment('count_click');
+    }
+
+    public function reduceStock(int $qty = 1): void
+    {
+        if ($this->stock < $qty) {
+            throw new \Exception('Stock tidak cukup');
+        }
+
+        $this->decrement('stock', $qty);
+    }
+
+    public function addStock(int $qty = 1): void
+    {
+        $this->increment('stock', $qty);
     }
 }

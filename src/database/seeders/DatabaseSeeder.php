@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BranchTimeSlot;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -55,6 +56,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,       // Products (depends on Category)
             ProductOptionSeeder::class, // Product options (depends on Product)
             BranchSeeder::class,        // branch seeder
+            BranchTimeSlotSeeder::class,       // branch time slot
             // CafeSeeder::class,          // Cafes (depends on City)
             // CafeTimeSlotSeeder::class,  // Cafe time slots (depends on Cafe)
             WalletSeeder::class,        // User wallets (depends on User)

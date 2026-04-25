@@ -22,9 +22,12 @@ class OptionsRelationManager extends RelationManager
                 Forms\Components\Select::make('type')
                     ->options([
                         'size' => 'Size',
-                        'dairy' => 'Dairy',
-                        'sweetness' => 'Sweetness',
-                        'ice' => 'Ice',
+                        // 'dairy' => 'Dairy',
+                        // 'sweetness' => 'Sweetness',
+                        // 'ice' => 'Ice',
+                        'quality' => 'Quality',
+                        'service' => 'Service',
+                        'bundle' => 'Bundle',
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('price')
@@ -47,9 +50,12 @@ class OptionsRelationManager extends RelationManager
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'size' => 'info',
-                        'dairy' => 'warning',
-                        'sweetness' => 'success',
-                        'ice' => 'primary',
+                        // 'dairy' => 'warning',
+                        // 'sweetness' => 'success',
+                        // 'ice' => 'primary',
+                        'quality' => 'warning',
+                        'service' => 'success',
+                        'bundle' => 'primary',
                         default => 'gray',
                     })
                     ->sortable(),
@@ -61,9 +67,9 @@ class OptionsRelationManager extends RelationManager
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
                         'size' => 'Size',
-                        'dairy' => 'Dairy',
-                        'sweetness' => 'Sweetness',
-                        'ice' => 'Ice',
+                        'quality' => 'Quality',
+                        'service' => 'Service',
+                        'bundle' => 'Bundle',
                     ]),
             ])
             ->headerActions([

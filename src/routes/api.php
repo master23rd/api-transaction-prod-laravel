@@ -67,6 +67,7 @@ Route::middleware('throttle:api')->group(function () {
     Route::get('/products/featured', [ProductController::class, 'featured']);
     Route::get('/products/category/{categorySlug}', [ProductController::class, 'byCategorySlug']);
     Route::get('/products/{identifier}', [ProductController::class, 'show']);
+    Route::post('/products/{identifier}/click', [ProductController::class, 'click']);
     Route::get('/categories/{categoryId}/products', [ProductController::class, 'byCategory']);
 });
 

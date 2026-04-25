@@ -140,4 +140,17 @@ class ProductService
             ];
         })->values()->toArray();
     }
+
+    public function incrementClick($identifier)
+    {
+        $product = $this->getProduct($identifier);
+
+        if (!$product) {
+            return null;
+        }
+
+        $product->increment('count_click');
+
+        return $product;
+    }
 }

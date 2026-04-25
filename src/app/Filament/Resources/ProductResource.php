@@ -54,6 +54,18 @@ class ProductResource extends Resource
                             ->numeric()
                             ->prefix('Rp')
                             ->minValue(0),
+                        Forms\Components\TextInput::make('stock')
+                            ->label('Stock')
+                            ->numeric()
+                            ->minValue(0)
+                            ->default(0)
+                            ->required(),
+                        Forms\Components\Select::make('store_id')
+                            ->label('Store')
+                            ->relationship('store', 'name') // 
+                            ->searchable()
+                            ->preload()
+                            ->required(),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Image')
@@ -71,12 +83,12 @@ class ProductResource extends Resource
                             ->label('Description')
                             ->rows(4)
                             ->columnSpanFull(),
-                        Forms\Components\TextInput::make('service_time')
-                            ->label('Service Time (minutes)')
-                            ->numeric()
-                            ->suffix('min')
-                            ->minValue(1)
-                            ->default(5),
+                        // Forms\Components\TextInput::make('service_time')
+                        //     ->label('Service Time (minutes)')
+                        //     ->numeric()
+                        //     ->suffix('min')
+                        //     ->minValue(1)
+                        //     ->default(5),
                         Forms\Components\TextInput::make('rate')
                             ->label('Rating')
                             ->numeric()
@@ -93,7 +105,16 @@ class ProductResource extends Resource
                             ->label('Featured Product')
                             ->helperText('Featured products will be displayed in the "Featured For You" section')
                             ->default(false),
-                    ]),
+                        
+                        Forms\Components\TextInput::make('count_click')
+                            ->label('Jumlah Transaksi (*berdasrkan transaksi whatsapp)')
+                            ->numeric()
+                            ->default(0)
+                            ->disabled() // ❗ tidak bisa diedit
+                            ->dehydrated(false) // ❗ tidak ikut save
+                            ->visible(fn ($operation) => $operation !== 'create'), // hanya tampil saat edit
+
+                    ])->columns(2),
                 
                 // Forms\Components\Select::make('branch_id')
                 //     ->label('Branch')
@@ -101,19 +122,7 @@ class ProductResource extends Resource
                 //     ->reactive()
                 //     ->afterStateUpdated(fn ($state, $set) => $set('store_id', null)),
                 
-                Forms\Components\Select::make('store_id')
-                    ->label('Store')
-                    ->options(function ($get) {
-                        if (!$get('branch_id')) return [];
-
-                        return \App\Models\Store::where('branch_id', $get('branch_id'))
-                            ->pluck('name', 'id');
-                    })
-                    ->getOptionLabelUsing(fn ($value) => \App\Models\Store::find($value)?->name)
-                    ->afterStateUpdated(fn ($state, $set) => $set('store_id', null))
-                    ->required()
-                    ->reactive()
-                    ->searchable(),
+                
             ]);
     }
 
@@ -152,11 +161,11 @@ class ProductResource extends Resource
                     ->trueColor('warning')
                     ->falseColor('gray')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('service_time')
-                    ->label('Service')
-                    ->suffix(' min')
-                    ->sortable()
-                    ->toggleable(),
+                // Tables\Columns\TextColumn::make('service_time')
+                //     ->label('Service')
+                //     ->suffix(' min')
+                //     ->sortable()
+                //     ->toggleable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -234,10 +243,10 @@ class ProductResource extends Resource
                             ->label('Description')
                             ->prose()
                             ->columnSpanFull(),
-                        Infolists\Components\TextEntry::make('service_time')
-                            ->label('Service Time')
-                            ->suffix(' minutes')
-                            ->icon('heroicon-o-clock'),
+                        // Infolists\Components\TextEntry::make('service_time')
+                        //     ->label('Service Time')
+                        //     ->suffix(' minutes')
+                        //     ->icon('heroicon-o-clock'),
                         Infolists\Components\TextEntry::make('rate')
                             ->label('Rating')
                             ->formatStateUsing(fn (string $state): string => $state . ' / 5 ⭐')

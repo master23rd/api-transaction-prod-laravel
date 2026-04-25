@@ -124,4 +124,25 @@ class ProductController extends Controller
             ],
         ]);
     }
+
+    public function click(string $identifier): JsonResponse
+    {
+        $product = $this->productService->incrementClick($identifier);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Click recorded',
+            'data' => [
+                'id' => $product->id,
+                'count_click' => $product->count_click,
+            ],
+        ]);
+    }
 }

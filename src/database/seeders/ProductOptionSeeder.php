@@ -20,20 +20,20 @@ class ProductOptionSeeder extends Seeder
             ['name' => 'Large', 'price' => 10000, 'type' => 'size'],
 
             // Dairy options
-            ['name' => 'Regular Milk', 'price' => 0, 'type' => 'dairy'],
-            ['name' => 'Oat Milk', 'price' => 8000, 'type' => 'dairy'],
-            ['name' => 'Almond Milk', 'price' => 10000, 'type' => 'dairy'],
-            ['name' => 'Soy Milk', 'price' => 6000, 'type' => 'dairy'],
+            // ['name' => 'Regular Milk', 'price' => 0, 'type' => 'dairy'],
+            // ['name' => 'Oat Milk', 'price' => 8000, 'type' => 'dairy'],
+            // ['name' => 'Almond Milk', 'price' => 10000, 'type' => 'dairy'],
+            // ['name' => 'Soy Milk', 'price' => 6000, 'type' => 'dairy'],
 
-            // Sweetness options
-            ['name' => 'Normal Sugar', 'price' => 0, 'type' => 'sweetness'],
-            ['name' => 'Less Sugar', 'price' => 0, 'type' => 'sweetness'],
-            ['name' => 'No Sugar', 'price' => 0, 'type' => 'sweetness'],
+            // // Sweetness options
+            // ['name' => 'Normal Sugar', 'price' => 0, 'type' => 'sweetness'],
+            // ['name' => 'Less Sugar', 'price' => 0, 'type' => 'sweetness'],
+            // ['name' => 'No Sugar', 'price' => 0, 'type' => 'sweetness'],
 
-            // Ice options
-            ['name' => 'Normal Ice', 'price' => 0, 'type' => 'ice'],
-            ['name' => 'Less Ice', 'price' => 0, 'type' => 'ice'],
-            ['name' => 'No Ice', 'price' => 0, 'type' => 'ice'],
+            // // Ice options
+            // ['name' => 'Normal Ice', 'price' => 0, 'type' => 'ice'],
+            // ['name' => 'Less Ice', 'price' => 0, 'type' => 'ice'],
+            // ['name' => 'No Ice', 'price' => 0, 'type' => 'ice'],
         ];
 
         // Get all beverage products (not snack, merchandise)
