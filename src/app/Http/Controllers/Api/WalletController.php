@@ -106,7 +106,7 @@ class WalletController extends Controller
     {
         $validated = $request->validate([
             'amount' => 'required|integer|min:10000',
-            'unique_code' => 'required|integer|min:1|max:200',
+            // 'unique_code' => 'required|integer|min:1|max:200',
             'proof_of_payment' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 

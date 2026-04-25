@@ -19,6 +19,8 @@ class WalletTransaction extends Model
         'proof_of_payment',
         'service_fee',
         'unique_code',
+        'notes', 
+        'reference_code',
     ];
 
     protected $casts = [
@@ -45,5 +47,32 @@ class WalletTransaction extends Model
     public function transaction(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+
+            // ===== GENERATE REFERENCE CODE =====
+            do {
+                $date = now()->format('ymd');
+                $random = rand(10000, 999999); // 5-6 digit
+
+                $reference = $date . $random;
+
+            } while (self::where('reference_code', $reference)->exists());
+
+            $model->reference_code = $reference;
+
+            // // ===== GENERATE STATEMENT =====
+            // $wallet = \App\Models\Wallet::find($model->wallet_id);
+
+            // $accountNumber = $wallet?->account_number ?? 'UNKNOWN';
+            // $amount = str_pad($model->amount, 6, '0', STR_PAD_LEFT);
+            // $type = strtoupper($model->type);
+            // $date = now()->format('ymd');
+
+            // $model->statement = "{$accountNumber}_{$amount}_{$type}_{$date}";
+        });
     }
 }

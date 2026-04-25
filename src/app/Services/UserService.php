@@ -41,13 +41,15 @@ class UserService
             // Assign role
             $user->assignRole('customer');
 
-            // Create wallet
+            // Create wallet (standard wallet)
             Wallet::create([
                 'user_id' => $user->id,
                 'branch_id' => $data['branch_id'] ?? null,
                 'balance' => 0,
-                
+                'account_number' => $this->generateAccountNumber(),
             ]);
+
+            //next phase : various wallet
 
             // INSERT USER DETAIL (BARU)
             UserDetail::create([
@@ -145,6 +147,7 @@ class UserService
             'email_verified_at' => $user->email_verified_at,
             'roles' => $user->getRoleNames(),
             'wallet_balance' => $user->wallet?->balance ?? 0,
+            'account_number' => $user->wallet?->account_number,
             'branch' => 
                 $user->wallet && $user->wallet->branch ? [
                     'id' => $user->wallet->branch->id,
@@ -223,5 +226,15 @@ class UserService
             'member_since' => $user->created_at->toISOString(),
             'member_days' => $user->created_at->diffInDays(now()),
         ];
+    }
+
+    private function generateAccountNumber(): string
+    {
+        do {
+            // contoh: timestamp + random
+            $number = now()->format('His') . rand(100, 999);
+        } while (Wallet::where('account_number', $number)->exists());
+
+        return $number;
     }
 }

@@ -41,25 +41,30 @@ class WalletService
             throw new \Exception('Wallet not found');
         }
 
+        /** Unique Code Section */
         // Use unique code from request (validated to be between 1-200)
-        $uniqueCode = $data['unique_code'];
+        // $uniqueCode = $data['unique_code'];
 
         // Validate unique code is within range
-        if ($uniqueCode < 1 || $uniqueCode > $this->maxUniqueCode) {
-            throw new \Exception('Unique code must be between 1 and ' . $this->maxUniqueCode);
-        }
+        // if ($uniqueCode < 1 || $uniqueCode > $this->maxUniqueCode) {
+        //     throw new \Exception('Unique code must be between 1 and ' . $this->maxUniqueCode);
+        // }
 
-        $amount = $data['amount']; // Pure top-up amount
-        $totalAmount = $amount + $this->topupServiceFee - $uniqueCode;
+        // $amount = $data['amount']; // Pure top-up amount
+        // $totalAmount = $amount + $this->topupServiceFee - $uniqueCode;
+        /** End of Section */
+
+        $amount = $data['amount'];
 
         $transactionData = [
             'wallet_id' => $wallet->id,
             'amount' => $amount,
-            'total_amount' => $totalAmount,
+            'total_amount' => $amount,
             'type' => 'topup',
             'status' => 'pending',
             'service_fee' => $this->topupServiceFee,
-            'unique_code' => $uniqueCode,
+            'notes' => $data['notes'] ?? 'Top Up oleh ' . $user->name,
+            // 'unique_code' => $uniqueCode,
         ];
 
         // Handle proof of payment upload
@@ -131,10 +136,11 @@ class WalletService
                 'id' => $transaction->transaction->cafe->id,
                 'name' => $transaction->transaction->cafe->name,
             ] : null,
-            'branch' => $transaction->transaction?->branch ? [
-                'id' => $transaction->transaction->branch->id,
-                'name' => $transaction->transaction->branch->name,
+            'store' => $transaction->transaction?->store ? [
+                'id' => $transaction->transaction->store->id,
+                'name' => $transaction->transaction->store->name,
             ] : null,
+            'notes' => $transaction->notes,
             'created_at' => $transaction->created_at?->toISOString(),
         ];
     }
@@ -145,13 +151,14 @@ class WalletService
             'id' => $transaction->id,
             'type' => $transaction->type,
             'status' => $transaction->status,
+            'reference_code' => $transaction->reference_code,
             'amount' => $transaction->amount,
             'amount_formatted' => 'Rp ' . number_format($transaction->amount ?? 0, 0, ',', '.'),
             'total_amount' => $transaction->total_amount,
             'total_amount_formatted' => 'Rp ' . number_format($transaction->total_amount, 0, ',', '.'),
-            'service_fee' => $transaction->service_fee,
-            'service_fee_formatted' => 'Rp ' . number_format($transaction->service_fee ?? 0, 0, ',', '.'),
-            'unique_code' => $transaction->unique_code,
+            // 'service_fee' => $transaction->service_fee,
+            // 'service_fee_formatted' => 'Rp ' . number_format($transaction->service_fee ?? 0, 0, ',', '.'),
+            // 'unique_code' => $transaction->unique_code,
             'proof_of_payment' => $transaction->proof_of_payment,
             'proof_of_payment_url' => $transaction->proof_of_payment ? url(Storage::url($transaction->proof_of_payment)) : null,
             'transaction' => $transaction->transaction ? [
@@ -160,11 +167,12 @@ class WalletService
                     'id' => $transaction->transaction->cafe->id,
                     'name' => $transaction->transaction->cafe->name,
                 ] : null,
-                'branch' => $transaction->transaction->branch ? [
-                    'id' => $transaction->transaction->branch->id,
-                    'name' => $transaction->transaction->branch->name,
+                'store' => $transaction->transaction?->store ? [
+                    'id' => $transaction->transaction->store->id,
+                    'name' => $transaction->transaction->store->name,
                 ] : null,
             ] : null,
+            'notes' => $transaction->notes,
             'created_at' => $transaction->created_at?->toISOString(),
             'updated_at' => $transaction->updated_at?->toISOString(),
         ];

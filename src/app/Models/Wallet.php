@@ -12,6 +12,7 @@ class Wallet extends Model
         'user_id',
         'branch_id',
         'balance',
+        'account_number',
     ];
 
     public function user(): BelongsTo
@@ -47,4 +48,13 @@ class Wallet extends Model
     // {
     //     return $this->belongsToMany(Store::class, 'store_wallet'); 
     // }
+
+    public function setAccountNumberAttribute($value)
+    {
+        if ($this->exists) {
+            return; // ignore kalau sudah ada
+        }
+
+        $this->attributes['account_number'] = $value;
+    }
 }
