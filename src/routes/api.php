@@ -67,7 +67,6 @@ Route::middleware('throttle:api')->group(function () {
     Route::get('/products/featured', [ProductController::class, 'featured']);
     Route::get('/products/category/{categorySlug}', [ProductController::class, 'byCategorySlug']);
     Route::get('/products/{identifier}', [ProductController::class, 'show']);
-    Route::post('/products/{identifier}/click', [ProductController::class, 'click']);
     Route::get('/categories/{categoryId}/products', [ProductController::class, 'byCategory']);
 });
 
@@ -79,6 +78,8 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::get('/user/stats', [AuthController::class, 'stats']);
     Route::put('/user/profile', [AuthController::class, 'updateProfile']);
     Route::post('/user/change-password', [AuthController::class, 'changePassword']);
+
+    Route::post('/products/{identifier}/click', [ProductController::class, 'click']);
 
     // Transaction routes
     Route::get('/transactions', [TransactionController::class, 'index']);

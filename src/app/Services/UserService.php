@@ -116,6 +116,7 @@ class UserService
             'email' => $data['email'] ?? $user->email,
             'phone' => $data['phone'] ?? $user->phone,
             'gender' => $data['gender'] ?? $user->gender,
+            'is_2fa_enabled' => (int) $data['is_2fa_enabled'] ?? $user->is_2fa_enabled,
         ];
 
         // Handle photo upload
@@ -135,6 +136,7 @@ class UserService
             $updateData['photo'] = null;
         }
 
+        // ✅ UPDATE USER
         return $this->userRepository->update($user, $updateData);
     }
 
@@ -159,6 +161,7 @@ class UserService
                     'id' => $user->wallet->branch->id,
                     'name' => $user->wallet->branch->name,
                 ] : null,
+            'is_2fa_enabled' => $user->is_2fa_enabled ?? true,
             'created_at' => $user->created_at,
             'updated_at' => $user->updated_at,
         ];

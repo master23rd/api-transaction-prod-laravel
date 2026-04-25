@@ -149,6 +149,17 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->money('IDR')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('stock')
+                    ->label('Stock')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger'),
+
+                Tables\Columns\TextColumn::make('count_click')
+                    ->label('Jumlah Transaksi')
+                    ->sortable()
+                    ->badge()
+                    ->color('info'),
                 Tables\Columns\TextColumn::make('rate')
                     ->label('Rating')
                     ->formatStateUsing(fn (string $state): string => $state . ' ⭐')
@@ -251,6 +262,15 @@ class ProductResource extends Resource
                             ->label('Rating')
                             ->formatStateUsing(fn (string $state): string => $state . ' / 5 ⭐')
                             ->icon('heroicon-o-star'),
+                        Infolists\Components\TextEntry::make('stock')
+                            ->label('Stock')
+                            ->badge()
+                            ->color(fn ($state) => $state > 0 ? 'success' : 'danger'),
+
+                        Infolists\Components\TextEntry::make('count_click')
+                            ->label('Jumlah Transaksi')
+                            ->badge()
+                            ->color('info'),
                     ])->columns(2),
 
                 Infolists\Components\Section::make('Timestamps')

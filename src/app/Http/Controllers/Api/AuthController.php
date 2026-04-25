@@ -158,12 +158,13 @@ class AuthController extends Controller
     public function updateProfile(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $request->user()->id,
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:users,email,' . $request->user()->id,
             'phone' => 'nullable|string|max:20',
             'gender' => 'nullable|string|in:male,female,other',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'remove_photo' => 'nullable|boolean',
+            'is_2fa_enabled' => 'nullable|boolean',
         ]);
 
         $user = $this->authService->updateProfile($request->user(), $validated);
