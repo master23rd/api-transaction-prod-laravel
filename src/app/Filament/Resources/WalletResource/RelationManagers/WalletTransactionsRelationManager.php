@@ -22,9 +22,9 @@ class WalletTransactionsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('type')
                     ->options([
-                        'top_up' => 'Top Up',
+                        'topup' => 'Top Up',
                         'payment' => 'Payment',
-                        'refund' => 'Refund',
+                        // 'refund' => 'Refund',
                     ])
                     ->required()
                     ->native(false),
@@ -35,20 +35,25 @@ class WalletTransactionsRelationManager extends RelationManager
                 Forms\Components\Select::make('status')
                     ->options([
                         'pending' => 'Pending',
-                        'success' => 'Success',
-                        'failed' => 'Failed',
+                        'approved' => 'Approved',
+                        // 'rejected' => 'Rejected',
+                        // 'cancelled' => 'Cancelled',
                     ])
                     ->required()
                     ->native(false),
-                Forms\Components\TextInput::make('service_fee')
-                    ->numeric()
-                    ->prefix('Rp')
-                    ->default(0),
-                Forms\Components\TextInput::make('unique_code')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(200)
-                    ->helperText('Unique code must be between 1-200'),
+                Forms\Components\Textarea::make('notes')
+                    ->label('Notes')
+                    ->rows(3)
+                    ->columnSpanFull(),
+                // Forms\Components\TextInput::make('service_fee')
+                //     ->numeric()
+                //     ->prefix('Rp')
+                //     ->default(0),
+                // Forms\Components\TextInput::make('unique_code')
+                //     ->numeric()
+                //     ->minValue(1)
+                //     ->maxValue(200)
+                //     ->helperText('Unique code must be between 1-200'),
                 Forms\Components\FileUpload::make('proof_of_payment')
                     ->image()
                     ->directory('wallets/proofs'),
@@ -67,13 +72,13 @@ class WalletTransactionsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'top_up' => 'success',
+                        'topup' => 'success',
                         'payment' => 'warning',
                         'refund' => 'info',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'top_up' => 'Top Up',
+                        'topup' => 'Top Up',
                         'payment' => 'Payment',
                         'refund' => 'Refund',
                         default => $state,
@@ -108,62 +113,89 @@ class WalletTransactionsRelationManager extends RelationManager
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'top_up' => 'Top Up',
+                        'topup' => 'Top Up',
                         'payment' => 'Payment',
-                        'refund' => 'Refund',
+                        // 'refund' => 'Refund',
                     ]),
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
-                        'success' => 'Success',
-                        'failed' => 'Failed',
+                        'approved' => 'Approved',
+                        'rejected' => 'Rejected',
                     ]),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Add Transaction'),
+                    ->label('Add Transaction')
+                    ->after(function (WalletTransaction $record) {
+                        if ($record->status == 'pending') return;
+                        $wallet = $record->wallet;
+
+                        if (!$wallet) return;
+
+                        if ($record->type === 'topup') {
+                            $wallet->increment('balance', $record->total_amount);
+                        } elseif ($record->type === 'payment') {
+                            if ($wallet->balance < $record->total_amount) {
+                                throw new \Exception('Saldo tidak cukup');
+                            }
+
+                            $wallet->decrement('balance', $record->total_amount);
+                        }
+                    }),
             ])
             ->actions([
-                Tables\Actions\Action::make('approve')
+                Tables\Actions\Action::make('approved')
                     ->label('Approve')
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->visible(fn (WalletTransaction $record): bool => $record->status === 'pending')
                     ->requiresConfirmation()
                     ->action(function (WalletTransaction $record): void {
-                        // if ($record->status !== 'pending') return;
+                        if ($record->status !== 'pending') return;
 
-                        // $record->update(['status' => 'success']);
-
-                        // $wallet = $record->wallet;
-
-                        // if (!$wallet) return;
-                        
-                        // if (in_array($record->type, ['top_up', 'refund'])) {
-                        //     $wallet->increment('balance', $record->amount);
-                        // } elseif ($record->type === 'payment') {
-                        //     $wallet->decrement('balance', $record->amount);
-                        // }
-
-                        // Notification::make()
-                        // ->title('Transaction approved')
-                        // ->body('Wallet balance updated: +Rp ' . number_format($record->amount, 0, ',', '.'))
-                        // ->success()
-                        // ->send();
-
-                        $record->update(['status' => 'approved']);
-
-                        // Update wallet balance for topup - use amount (pure top-up amount)
                         $wallet = $record->wallet;
-                        $wallet->update(['balance' => $wallet->balance + $record->amount]);
+                        
+                        if (!$wallet) return;
+                        
+                        // if (in_array($record->type, ['topup', 'refund'])) {
+                        if (in_array($record->type, ['topup'])) {
+                            $wallet->increment('balance', $record->total_amount);
+                        } elseif ($record->type === 'payment') {
+                            if ($wallet->balance < $record->total_amount) {
+                                Notification::make()
+                                    ->title('Saldo tidak cukup')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+                            $wallet->decrement('balance', $record->total_amount);
+                        }
 
                         Notification::make()
-                            ->title('Transaction approved')
-                            ->body('Wallet balance updated: +Rp ' . number_format($record->amount, 0, ',', '.'))
-                            ->success()
-                            ->send();
+                        ->title('Transaction approved')
+                        ->body('Wallet balance updated: +Rp ' . number_format($record->amount, 0, ',', '.'))
+                        ->success()
+                        ->send();
+
+                        $record->update([
+                            'status' => 'approved',
+                            'branch_id' => $record->wallet->branch_id,
+                        ]);
+
+                        // Update wallet balance for topup - use amount (pure top-up amount)
+                        // $wallet = $record->wallet;
+                        // $wallet->update([
+                        //     'balance' => $wallet->balance + $record->amount
+                        // ]);
+
+                        // Notification::make()
+                        //     ->title('Transaction approved')
+                        //     ->body('Wallet balance updated: +Rp ' . number_format($record->amount, 0, ',', '.'))
+                        //     ->success()
+                        //     ->send();
                     }),
-                Tables\Actions\Action::make('reject')
+                Tables\Actions\Action::make('rejected')
                     ->label('Reject')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')

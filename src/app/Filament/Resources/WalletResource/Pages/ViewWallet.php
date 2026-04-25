@@ -31,9 +31,9 @@ class ViewWallet extends ViewRecord
                     Forms\Components\Select::make('status')
                         ->options([
                             'pending' => 'Pending',
-                            'success' => 'Success',
+                            'approved' => 'Approved',
                         ])
-                        ->default('success')
+                        ->default('pending')
                         ->required(),
                     Forms\Components\FileUpload::make('proof_of_payment')
                         ->image()
@@ -42,7 +42,7 @@ class ViewWallet extends ViewRecord
                 ->action(function (array $data): void {
                     $record = $this->record;
                     $uniqueCode = rand(100, 999);
-
+                    
                     WalletTransaction::create([
                         'wallet_id' => $record->id,
                         'amount' => $data['amount'],
@@ -52,6 +52,7 @@ class ViewWallet extends ViewRecord
                         'proof_of_payment' => $data['proof_of_payment'] ?? null,
                         'service_fee' => 0,
                         'unique_code' => $uniqueCode,
+                        'branch_id' => $record->branch_id,
                     ]);
 
                     if ($data['status'] === 'success') {

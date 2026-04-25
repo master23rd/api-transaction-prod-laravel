@@ -51,13 +51,17 @@ class WalletResource extends Resource
                             ->prefix('Rp')
                             ->default(0)
                             ->minValue(0),
-
                         Forms\Components\Select::make('branch_id')
                             ->label('Branch')
                             ->relationship('branch', 'name')
                             ->searchable()
                             ->preload()
                             ->required(),
+                        Forms\Components\TextInput::make('account_number')
+                            ->label('Account Number')
+                            ->disabled() // tidak bisa diedit
+                            ->dehydrated(false) // tidak ikut ke request (aman)
+                            ->visible(fn ($operation) => $operation !== 'create'), // hanya tampil saat edit
                     ])->columns(2),
 
                     
@@ -84,6 +88,12 @@ class WalletResource extends Resource
                     ->label('Branch')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('account_number')
+                    ->label('No Rekening')
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('Copied!')
+                    ->copyMessageDuration(1500),
                 Tables\Columns\TextColumn::make('balance')
                     ->money('IDR')
                     ->sortable()
@@ -125,9 +135,11 @@ class WalletResource extends Resource
                         Forms\Components\Select::make('status')
                             ->options([
                                 'pending' => 'Pending',
-                                'success' => 'Success',
+                                'approved' => 'Approved',
+                                'rejected' => 'Rejected',
+                                'cancelled' => 'Cancelled',
                             ])
-                            ->default('success')
+                            ->default('pending')
                             ->required(),
                         Forms\Components\FileUpload::make('proof_of_payment')
                             ->image()
@@ -146,6 +158,7 @@ class WalletResource extends Resource
                             'proof_of_payment' => $data['proof_of_payment'] ?? null,
                             'service_fee' => 0,
                             'unique_code' => $uniqueCode,
+                            'branch_id' => $record->branch_id,
                         ]);
 
                         // Update balance if success
@@ -192,6 +205,7 @@ class WalletResource extends Resource
                             'type' => 'payment',
                             'status' => 'approved',
                             'service_fee' => 0,
+                            'branch_id' => $record->branch_id,
                         ]);
 
                         // Update balance
@@ -230,6 +244,10 @@ class WalletResource extends Resource
                                 ->label('Customer Name')
                                 ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
                                 ->weight('bold'),
+                            Infolists\Components\TextEntry::make('account_number')
+                                ->label('No Rekening')
+                                ->icon('heroicon-o-credit-card')
+                                ->copyable(),
                             Infolists\Components\TextEntry::make('user.email')
                                 ->label('Email')
                                 ->icon('heroicon-o-envelope'),

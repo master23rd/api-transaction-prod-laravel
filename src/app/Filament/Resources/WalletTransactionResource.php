@@ -68,10 +68,10 @@ class WalletTransactionResource extends Resource
                             ->numeric()
                             ->prefix('Rp')
                             ->default(0),
-                        Forms\Components\TextInput::make('unique_code')
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(200),
+                        // Forms\Components\TextInput::make('unique_code')
+                        //     ->numeric()
+                        //     ->minValue(1)
+                        //     ->maxValue(200),
                         Forms\Components\FileUpload::make('proof_of_payment')
                             ->image()
                             ->directory('wallet-proofs'),
@@ -104,6 +104,15 @@ class WalletTransactionResource extends Resource
                         'refund' => 'Refund',
                         default => ucfirst($state),
                     }),
+                Tables\Columns\TextColumn::make('wallet.account_number')
+                    ->label('No Rekening')
+                    ->searchable()
+                    ->copyable(),
+
+                Tables\Columns\TextColumn::make('reference_code')
+                    ->label('Ref Code')
+                    ->searchable()
+                    ->copyable(),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Top Up Amount')
                     ->money('IDR')
@@ -113,10 +122,10 @@ class WalletTransactionResource extends Resource
                     ->money('IDR')
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('unique_code')
-                    ->label('Unique Code')
-                    ->sortable()
-                    ->toggleable(),
+                // Tables\Columns\TextColumn::make('unique_code')
+                //     ->label('Unique Code')
+                //     ->sortable()
+                //     ->toggleable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -205,10 +214,17 @@ class WalletTransactionResource extends Resource
                             ->label('Customer Name'),
                         Infolists\Components\TextEntry::make('wallet.user.email')
                             ->label('Email'),
-                    ])->columns(2),
+                        Infolists\Components\TextEntry::make('wallet.account_number')
+                            ->label('No Rekening')
+                            ->icon('heroicon-o-credit-card'),
+                    ])->columns(3),
 
                 Infolists\Components\Section::make('Transaction Details')
                     ->schema([
+                        Infolists\Components\TextEntry::make('reference_code')
+                            ->label('Reference Code')
+                            ->badge()
+                            ->copyable(),
                         Infolists\Components\TextEntry::make('type')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
@@ -232,11 +248,14 @@ class WalletTransactionResource extends Resource
                         Infolists\Components\TextEntry::make('total_amount')
                             ->label('Transfer Amount')
                             ->money('IDR'),
-                        Infolists\Components\TextEntry::make('service_fee')
-                            ->money('IDR'),
-                        Infolists\Components\TextEntry::make('unique_code'),
-                        Infolists\Components\TextEntry::make('created_at')
-                            ->dateTime(),
+                        Infolists\Components\TextEntry::make('created_at')->dateTime(),
+                        Infolists\Components\TextEntry::make('notes')
+                            ->label('Notes')
+                            ->prose()
+                            ->columnSpanFull(),
+                        // Infolists\Components\TextEntry::make('service_fee')
+                        //     ->money('IDR'),
+                        // Infolists\Components\TextEntry::make('unique_code'),
                     ])->columns(3),
 
                 Infolists\Components\Section::make('Proof of Payment')

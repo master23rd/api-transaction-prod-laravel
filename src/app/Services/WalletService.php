@@ -64,6 +64,7 @@ class WalletService
             'status' => 'pending',
             'service_fee' => $this->topupServiceFee,
             'notes' => $data['notes'] ?? 'Top Up oleh ' . $user->name,
+            'branch_id' => $wallet->branch_id,
             // 'unique_code' => $uniqueCode,
         ];
 

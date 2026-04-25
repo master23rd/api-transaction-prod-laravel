@@ -57,4 +57,23 @@ class Wallet extends Model
 
         $this->attributes['account_number'] = $value;
     }
+
+    //observer
+    protected static function booted()
+    {
+        static::creating(function ($wallet) {
+            if (!$wallet->account_number) {
+                $wallet->account_number = self::generateAccountNumber();
+            }
+        });
+    }
+
+    public static function generateAccountNumber(): string
+    {
+        do {
+            $number = now()->format('His') . rand(100, 999);
+        } while (self::where('account_number', $number)->exists());
+
+        return $number;
+    }
 }

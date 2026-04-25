@@ -44,7 +44,7 @@ class UserService
             // Create wallet (standard wallet)
             Wallet::create([
                 'user_id' => $user->id,
-                'branch_id' => $data['branch_id'] ?? null,
+                'branch_id' => $data['branch_id'] ?? 1, //default is 1
                 'balance' => 0,
                 'account_number' => $this->generateAccountNumber(),
             ]);

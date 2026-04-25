@@ -21,6 +21,7 @@ class WalletTransaction extends Model
         'unique_code',
         'notes', 
         'reference_code',
+        'branch_id',
     ];
 
     protected $casts = [
@@ -52,6 +53,12 @@ class WalletTransaction extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
+
+            // GENERATE amount default
+            if (!$model->amount) {
+                $model->amount = $model->total_amount;
+            }
+
 
             // ===== GENERATE REFERENCE CODE =====
             do {
