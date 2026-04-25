@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,5 +28,12 @@ class UserDetail extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected function ktpPhotosUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->ktp_photos ? Storage::url($this->ktp_photos) : null,
+        );
     }
 }

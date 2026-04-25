@@ -20,14 +20,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create cafe manager user
-        $manager = User::firstOrCreate(
-            ['email' => 'manager@koperasi.com'],
-            [
-                'name' => 'Koperasi Manager',
-                'password' => Hash::make('password'),
-            ]
-        );
-        $manager->assignRole('cafe_manager');
+        // $manager = User::firstOrCreate(
+        //     ['email' => 'manager@koperasi.com'],
+        //     [
+        //         'name' => 'Koperasi Manager',
+        //         'password' => Hash::make('password'),
+        //     ]
+        // );
+        // $manager->assignRole('cafe_manager');
 
         $managerBranch = User::firstOrCreate(
             ['email' => 'sidiq@koperasi.com'],

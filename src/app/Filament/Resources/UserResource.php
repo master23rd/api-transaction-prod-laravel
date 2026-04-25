@@ -65,6 +65,12 @@ class UserResource extends Resource
                             ->helperText('User harus verified untuk bisa login')
                             ->default(false)
                             ->inline(false),
+                        
+                        Forms\Components\Toggle::make('is_2fa_enabled')
+                            ->label('2FA Mode')
+                            ->helperText('Aktifkan Verifikasi 2 arah agar lebih aman')
+                            ->default(true)
+                            ->inline(false),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Profile Information')
@@ -76,7 +82,11 @@ class UserResource extends Resource
                             ->disk('public')
                             ->visibility('public')
                             ->preserveFilenames(false)
-                            ->imageResizeTargetWidth(300),
+                            ->imageResizeTargetWidth(300)
+                            ->imageEditor()
+                            ->previewable(true) // ✅ penting
+                            ->openable() // klik buka
+                            ->downloadable(), // optional,
 
                         Forms\Components\Select::make('gender')
                             ->options([
@@ -102,7 +112,11 @@ class UserResource extends Resource
                             ->visibility('public')
                             ->imageResizeTargetWidth(800)
                             ->maxSize(2048)
-                            ->acceptedFileTypes(['image/jpeg', 'image/png']),
+                            ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                            ->imageEditor()
+                            ->previewable(true) // ✅ penting
+                            ->openable() // klik buka
+                            ->downloadable(), // optional,,
                     ])
                     ->columns(1),
 
@@ -129,7 +143,9 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('photo')
                     ->circular()
-                    ->defaultImageUrl(fn (User $record): string => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&color=7F9CF5&background=EBF4FF'),
+                    ->extraImgAttributes([
+                        'class' => 'cursor-pointer hover:scale-105 transition'
+                    ])->defaultImageUrl(fn (User $record): string => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&color=7F9CF5&background=EBF4FF'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -163,6 +179,22 @@ class UserResource extends Resource
                         default => 'gray',
                     })
                     ->toggleable(),
+                Tables\Columns\IconColumn::make('is_2fa_enabled')
+                    ->label('2FA')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-shield-check')
+                    ->falseIcon('heroicon-o-shield-exclamation')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_verified')
+                    ->label('Verifikasi Akun')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-shield-check')
+                    ->falseIcon('heroicon-o-shield-exclamation')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable()
                     ->toggleable(),
@@ -197,7 +229,8 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn (User $record): bool => $record->id !== 1),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -214,6 +247,11 @@ class UserResource extends Resource
                     ->schema([
                         Infolists\Components\ImageEntry::make('photo')
                             ->circular()
+                            ->url(fn ($record) => $record->photo ? asset('storage/' . $record->yphoto) : null)
+                            ->openUrlInNewTab() // ✅ ini bikin clickable
+                            ->extraImgAttributes([
+                                'class' => 'cursor-pointer hover:scale-105 transition'
+                            ])
                             ->defaultImageUrl(fn (User $record): string => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&color=7F9CF5&background=EBF4FF&size=200'),
                         Infolists\Components\Group::make([
                             Infolists\Components\TextEntry::make('name')
@@ -266,6 +304,20 @@ class UserResource extends Resource
                             ->label('Verified At')
                             ->dateTime()
                             ->placeholder('-'),
+                        Infolists\Components\IconEntry::make('is_2fa_enabled')
+                            ->label('2FA')
+                            ->boolean()
+                            ->trueIcon('heroicon-o-shield-check')
+                            ->falseIcon('heroicon-o-shield-exclamation')
+                            ->trueColor('success')
+                            ->falseColor('danger'),
+                        Infolists\Components\IconEntry::make('is_verified')
+                            ->label('Verifikasi Akun')
+                            ->boolean()
+                            ->trueIcon('heroicon-o-shield-check')
+                            ->falseIcon('heroicon-o-shield-exclamation')
+                            ->trueColor('success')
+                            ->falseColor('danger'),
                     ])->columns(4),
 
                 Infolists\Components\Section::make('User Detail Information')
@@ -322,7 +374,12 @@ class UserResource extends Resource
                         ->label('KTP Photo')
                         ->disk('public')
                         ->height(200)
-                        ->defaultImageUrl('https://via.placeholder.com/200x120?text=No+KTP'),
+                        ->url(fn ($record) => $record->detail->ktp_photos ? asset('storage/' . $record->detail->ktp_photos) : null)
+                        ->openUrlInNewTab() // ✅ ini bikin clickable
+                        ->extraImgAttributes([
+                            'class' => 'cursor-pointer hover:scale-105 transition'
+                        ])
+                        ->defaultImageUrl('https://via.placeholder.com/200x120'),
                 ])
                 ->columns(3),
 

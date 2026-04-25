@@ -35,6 +35,10 @@ class UserService
                 $userData['photo'] = $data['photo']->store('profile-photos', 'public');
             }
 
+            if (isset($data['ktp_photo'])) {
+                $data['ktp_photo'] = $data['ktp_photo']->store('ktp-photos', 'public');
+            }
+
             // Create user
             $user = $this->userRepository->create($userData);
 
@@ -65,7 +69,7 @@ class UserService
                 'name_person' => $data['name_person'] ?? null,
                 'kids' => $data['kids'] ?? 0,
                 'number_contact_person' => $data['number_contact_person'] ?? null,
-                'ktp_photos' => $data['ktp_photos'] ?? null,
+                'ktp_photos' => $data['ktp_photo'] ?? null,
             ]);
 
             DB::commit();
@@ -144,6 +148,8 @@ class UserService
             'gender' => $user->gender,
             'photo' => $user->photo,
             'photo_url' => $user->photo_url,
+            'ktp' => $user->detail?->ktp_photos,
+            'ktp_url' => $user->detail?->ktp_photos_url,
             'email_verified_at' => $user->email_verified_at,
             'roles' => $user->getRoleNames(),
             'wallet_balance' => $user->wallet?->balance ?? 0,

@@ -38,7 +38,7 @@ class AuthController extends Controller
             'name_person' => 'nullable|string',
             'kids' => 'nullable|integer',
             'number_contact_person' => 'nullable|string',
-            'ktp_photos' => 'nullable|url',
+            'ktp_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'branch_id' => 'nullable|exists:branches,id',
         ]);
 
