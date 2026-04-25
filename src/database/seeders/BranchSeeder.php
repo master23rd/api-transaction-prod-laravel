@@ -21,7 +21,7 @@ class BranchSeeder extends Seeder
                 'name' => 'Koperasi Sadulur Mujur Pusat', 
                 'city' => 'Bandung', 
                 'about' => 'Koperasi Cabang Utama', 
-                'facilities' => ['wifi', 'power', 'meeting', 'parking', 'ac',  'toilet'], 
+                'facilities' => ['wifi','meeting', 'parking', 'ac', 'toilet'], 
                 'manager_name' => 'Bapak Sidiq',
                 'phone_number' => '62895627540107',
                 'email' => 'sadulurjadimujur@gmail.com',

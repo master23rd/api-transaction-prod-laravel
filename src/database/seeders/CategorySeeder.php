@@ -15,10 +15,10 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             // 'Coffee',
-            'Milk',
+            'Susu',
             'Sembako',
             'Snack',
-            'Merchandise',
+            'Peralatan',
         ];
 
         foreach ($categories as $name) {

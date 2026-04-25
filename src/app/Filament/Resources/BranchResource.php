@@ -91,12 +91,12 @@ class BranchResource extends Resource
                         Forms\Components\CheckboxList::make('facilities')
                             ->options([
                                 'wifi' => 'WiFi',
-                                'power' => 'Power',
+                                // 'power' => 'Power',
                                 'meeting' => 'Meeting',
                                 'outdoor' => 'Outdoor',
                                 'parking' => 'Parking',
                                 'ac' => 'AC',
-                                'music' => 'Music',
+                                // 'music' => 'Music',
                                 'toilet' => 'Toilet',
                             ])
                             ->columns(4)
@@ -172,11 +172,15 @@ class BranchResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn (Branch $record) => $record->id !== 1),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->action(function ($records) {
+                            $records->filter(fn ($record) => $record->id !== 1)->each->delete();
+                        }),
                 ]),
             ]);
     }
