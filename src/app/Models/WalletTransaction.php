@@ -50,6 +50,11 @@ class WalletTransaction extends Model
         return $this->belongsTo(Transaction::class);
     }
 
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Branch::class);
+    }
+
     protected static function booted()
     {
         static::creating(function ($model) {

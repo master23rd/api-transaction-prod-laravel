@@ -17,7 +17,7 @@ class ViewWallet extends ViewRecord
     {
         return [
             Actions\Action::make('topUp')
-                ->label('Top Up')
+                ->label('Setor')
                 ->icon('heroicon-o-plus-circle')
                 ->color('success')
                 ->form([

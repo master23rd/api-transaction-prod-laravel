@@ -41,9 +41,9 @@ class WalletTransactionResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('type')
                             ->options([
-                                'topup' => 'Top Up',
-                                'payment' => 'Payment',
-                                'refund' => 'Refund',
+                                'topup' => 'Setor', //Top Up
+                                'payment' => 'Tarik', //Payment
+                                // 'refund' => 'Refund',
                             ])
                             ->required(),
                         Forms\Components\TextInput::make('amount')
@@ -64,10 +64,10 @@ class WalletTransactionResource extends Resource
                                 'cancelled' => 'Cancelled',
                             ])
                             ->required(),
-                        Forms\Components\TextInput::make('service_fee')
-                            ->numeric()
-                            ->prefix('Rp')
-                            ->default(0),
+                        // Forms\Components\TextInput::make('service_fee')
+                        //     ->numeric()
+                        //     ->prefix('Rp')
+                        //     ->default(0),
                         // Forms\Components\TextInput::make('unique_code')
                         //     ->numeric()
                         //     ->minValue(1)
@@ -99,8 +99,8 @@ class WalletTransactionResource extends Resource
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'topup' => 'Top Up',
-                        'payment' => 'Payment',
+                        'topup' => 'Setor', //'Top Up',
+                        'payment' => 'Tarik', //'Payment',
                         'refund' => 'Refund',
                         default => ucfirst($state),
                     }),
@@ -149,16 +149,16 @@ class WalletTransactionResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'topup' => 'Top Up',
-                        'payment' => 'Payment',
-                        'refund' => 'Refund',
+                        'topup' => 'Setor', //'Top Up',
+                        'payment' => 'Tarik', //'Payment',
+                        // 'refund' => 'Refund',
                     ]),
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
                         'approved' => 'Approved',
                         'rejected' => 'Rejected',
-                        'cancelled' => 'Cancelled',
+                        // 'cancelled' => 'Cancelled',
                     ]),
             ])
             ->actions([

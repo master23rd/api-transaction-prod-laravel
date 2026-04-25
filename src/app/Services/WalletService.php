@@ -137,9 +137,9 @@ class WalletService
                 'id' => $transaction->transaction->cafe->id,
                 'name' => $transaction->transaction->cafe->name,
             ] : null,
-            'store' => $transaction->transaction?->store ? [
-                'id' => $transaction->transaction->store->id,
-                'name' => $transaction->transaction->store->name,
+            'branch' => $transaction->transaction?->branch ? [
+                'id' => $transaction->transaction->branch->id,
+                'name' => $transaction->transaction->branch->name,
             ] : null,
             'notes' => $transaction->notes,
             'created_at' => $transaction->created_at?->toISOString(),
@@ -169,6 +169,10 @@ class WalletService
                     'name' => $transaction->transaction->cafe->name,
                 ] : null,
                 'store' => $transaction->transaction?->store ? [
+                    'id' => $transaction->transaction->store->id,
+                    'name' => $transaction->transaction->store->name,
+                ] : null,
+                'branch' => $transaction->transaction?->store ? [
                     'id' => $transaction->transaction->store->id,
                     'name' => $transaction->transaction->store->name,
                 ] : null,

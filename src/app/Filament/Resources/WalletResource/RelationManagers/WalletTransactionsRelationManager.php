@@ -22,8 +22,8 @@ class WalletTransactionsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('type')
                     ->options([
-                        'topup' => 'Top Up',
-                        'payment' => 'Payment',
+                        'topup' => 'Setor', //'Top Up',
+                        'payment' => 'Tarik', //'Payment',
                         // 'refund' => 'Refund',
                     ])
                     ->required()
@@ -78,8 +78,8 @@ class WalletTransactionsRelationManager extends RelationManager
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'topup' => 'Top Up',
-                        'payment' => 'Payment',
+                        'topup' => 'Setor', //'Top Up',
+                        'payment' => 'Tarik', //'Payment',
                         'refund' => 'Refund',
                         default => $state,
                     }),
@@ -96,15 +96,15 @@ class WalletTransactionsRelationManager extends RelationManager
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
-                        'success' => 'success',
-                        'failed' => 'danger',
+                        'approved' => 'success',
+                        'rejected' => 'danger',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('service_fee')
-                    ->money('IDR')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('unique_code')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // Tables\Columns\TextColumn::make('service_fee')
+                //     ->money('IDR')
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                // Tables\Columns\TextColumn::make('unique_code')
+                //     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('transaction.id')
                     ->label('Order #')
                     ->formatStateUsing(fn (?string $state): string => $state ? '#' . str_pad($state, 5, '0', STR_PAD_LEFT) : '-')
@@ -113,8 +113,8 @@ class WalletTransactionsRelationManager extends RelationManager
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'topup' => 'Top Up',
-                        'payment' => 'Payment',
+                        'topup' => 'Setor', //'Top Up',
+                        'payment' => 'Tarik', //'Payment',
                         // 'refund' => 'Refund',
                     ]),
                 Tables\Filters\SelectFilter::make('status')
@@ -200,7 +200,7 @@ class WalletTransactionsRelationManager extends RelationManager
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->visible(fn ($record): bool => $record->status === 'pending')
-                    ->action(fn ($record) => $record->update(['status' => 'failed']))
+                    ->action(fn ($record) => $record->update(['status' => 'rejected']))
                     ->requiresConfirmation(),
                 Tables\Actions\ViewAction::make(),
             ])
