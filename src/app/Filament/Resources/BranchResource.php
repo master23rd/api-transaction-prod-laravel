@@ -64,6 +64,18 @@ class BranchResource extends Resource
                             ->searchable()
                             ->preload()
                             ->required(),
+                        Forms\Components\Textarea::make('address')
+                            ->label('Alamat')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('latitude')
+                            ->numeric()
+                            ->placeholder('-6.200000')
+                            ->helperText('Contoh: -6.200000'),
+                        Forms\Components\TextInput::make('longitude')
+                            ->numeric()
+                            ->placeholder('106.816666')
+                            ->helperText('Contoh: 106.816666'),
                         Forms\Components\TextInput::make('manager_name')
                             ->maxLength(255),
                     ])->columns(2),
@@ -142,6 +154,10 @@ class BranchResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('city.name')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->label('Alamat')
+                    ->limit(30)
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('manager_name')
                     ->searchable()
                     ->toggleable(),
@@ -204,6 +220,35 @@ class BranchResource extends Resource
                             ->label('Manager')
                             ->icon('heroicon-o-user'),
                     ])->columns(2),
+
+                Infolists\Components\Section::make('Location')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('address')
+                            ->label('Alamat')
+                            ->columnSpanFull(),
+
+                        Infolists\Components\TextEntry::make('latitude')
+                            ->label('Latitude'),
+
+                        Infolists\Components\TextEntry::make('longitude')
+                            ->label('Longitude'),
+
+                        // OPTIONAL: link ke Google Maps
+                        Infolists\Components\TextEntry::make('map')
+                            ->label('Google Maps')
+                            ->formatStateUsing(fn ($record) =>
+                                $record->latitude && $record->longitude
+                                    ? "https://www.google.com/maps?q={$record->latitude},{$record->longitude}"
+                                    : '-'
+                            )
+                            ->url(fn ($record) =>
+                                $record->latitude && $record->longitude
+                                    ? "https://www.google.com/maps?q={$record->latitude},{$record->longitude}"
+                                    : null
+                            )
+                            ->openUrlInNewTab(),
+                    ])
+                    ->columns(2),
 
                 Infolists\Components\Section::make('Images')
                     ->schema([

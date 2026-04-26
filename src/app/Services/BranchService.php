@@ -56,6 +56,9 @@ class BranchService
             'bank_name' => $branch->bank_name,
             'bank_account_number' => $branch->bank_account_number,
             'bank_account_name' => $branch->bank_account_name,
+            'address' => $branch->address,
+            'latitude' => $branch->latitude,
+            'longitude' => $branch->longitude,
             'city' => $branch->city ? [
                 'id' => $branch->city->id,
                 'name' => $branch->city->name,
@@ -94,6 +97,9 @@ class BranchService
                 'end_time' => $slot->end_time,
                 'is_active' => $slot->is_active,
             ])->toArray() : [],
+            'address' => $branch->address,
+            'latitude' => $branch->latitude,
+            'longitude' => $branch->longitude,
             'created_at' => $branch->created_at?->toISOString(),
             'updated_at' => $branch->updated_at?->toISOString(),
         ];

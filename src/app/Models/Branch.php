@@ -25,11 +25,17 @@ class Branch extends Model
         'bank_name',
         'bank_account_number',
         'bank_account_name',
+        'address',
+        'latitude',
+        'longitude',
     ];
 
     protected $casts = [
         'photos' => 'array',
         'facilities' => 'array',
+        'facilities' => 'array',
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     // protected $guarded = [];
