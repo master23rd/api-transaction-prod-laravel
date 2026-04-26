@@ -68,7 +68,7 @@ class WalletController extends Controller
         ]);
     }
 
-    public function showTransaction(Request $request, int $id): JsonResponse
+    public function showTransaction(Request $request, string $identifier): JsonResponse
     {
         $wallet = $this->walletService->getWallet($request->user());
 
@@ -79,7 +79,7 @@ class WalletController extends Controller
             ], 404);
         }
 
-        $transaction = $this->walletService->getTransaction($id, $wallet->id);
+        $transaction = $this->walletService->getTransactionSAny($identifier, $wallet->id);
 
         if (!$transaction) {
             return response()->json([
@@ -108,6 +108,7 @@ class WalletController extends Controller
             'amount' => 'required|integer|min:10000',
             // 'unique_code' => 'required|integer|min:1|max:200',
             'proof_of_payment' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'notes' => 'nullable|string|max:500'
         ]);
 
         try {

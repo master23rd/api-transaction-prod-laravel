@@ -33,6 +33,16 @@ class WalletService
         return $this->walletRepository->findTransactionByIdAndWallet($id, $walletId);
     }
 
+    public function getTransactionSAny(string $identifier, int $walletId)
+    {
+        return WalletTransaction::where('wallet_id', $walletId)
+            ->where(function ($query) use ($identifier) {
+                $query->where('id', $identifier)
+                    ->orWhere('reference_code', $identifier);
+            })
+            ->first();
+    }
+
     public function requestTopup(User $user, array $data): WalletTransaction
     {
         $wallet = $this->getWallet($user);
@@ -131,7 +141,8 @@ class WalletService
             'total_amount' => $transaction->total_amount,
             'total_amount_formatted' => 'Rp ' . number_format($transaction->total_amount, 0, ',', '.'),
             'service_fee' => $transaction->service_fee,
-            'unique_code' => $transaction->unique_code,
+            // 'unique_code' => $transaction->unique_code,
+            'reference_code' => $transaction->reference_code,
             'order_id' => $transaction->transaction_id, // Link to order/transaction
             'cafe' => $transaction->transaction?->cafe ? [
                 'id' => $transaction->transaction->cafe->id,
@@ -178,6 +189,7 @@ class WalletService
                 ] : null,
             ] : null,
             'notes' => $transaction->notes,
+            'reference_code' => $transaction->reference_code,
             'created_at' => $transaction->created_at?->toISOString(),
             'updated_at' => $transaction->updated_at?->toISOString(),
         ];

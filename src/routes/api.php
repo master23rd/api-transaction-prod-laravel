@@ -92,7 +92,7 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     // Wallet routes
     Route::get('/wallet', [WalletController::class, 'index']);
     Route::get('/wallet/transactions', [WalletController::class, 'transactions']);
-    Route::get('/wallet/transactions/{id}', [WalletController::class, 'showTransaction']);
+    Route::get('/wallet/transactions/{identifier}', [WalletController::class, 'showTransaction']);
     Route::get('/wallet/topup-info', [WalletController::class, 'topupInfo']);
     Route::post('/wallet/topup', [WalletController::class, 'requestTopup']);
     Route::post('/wallet/topup/{id}/upload-proof', [WalletController::class, 'uploadProof']);
