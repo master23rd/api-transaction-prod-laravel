@@ -125,7 +125,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function click(string $identifier): JsonResponse
+    public function click(Request $request, string $identifier): JsonResponse
     {
         $product = $this->productService->incrementClick($identifier);
 
