@@ -341,7 +341,14 @@ class WalletTransactionResource extends Resource
                         Infolists\Components\ImageEntry::make('proof_of_payment')
                             ->disk('public')
                             ->height(300)
-                            ->extraImgAttributes(['class' => 'rounded-lg']),
+                            ->extraImgAttributes([
+                                'class' => 'rounded-lg cursor-pointer',
+                            ])
+                            ->url(fn ($record) => $record->proof_of_payment 
+                                ? asset('storage/' . $record->proof_of_payment) 
+                                : null
+                            )
+                            ->openUrlInNewTab(),
                     ])
                     ->visible(fn (WalletTransaction $record): bool => $record->proof_of_payment !== null),
                 Infolists\Components\Section::make('Actions')
