@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\CafeController;
 use App\Http\Controllers\Api\CategoryController;
@@ -97,4 +98,6 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::post('/wallet/topup', [WalletController::class, 'requestTopup']);
     Route::post('/wallet/topup/{id}/upload-proof', [WalletController::class, 'uploadProof']);
     Route::post('/wallet/topup/{id}/cancel', [WalletController::class, 'cancelTopup']);
+
+    Route::get('/banners', [BannerController::class, 'index']);
 });
